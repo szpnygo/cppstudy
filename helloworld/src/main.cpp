@@ -1,17 +1,18 @@
 #include <iostream>
-#include <vector>
 #include <memory>
+#include <vector>
+
 #include "cat.h"
 #include "dog.h"
 
-template<typename T>
+template <typename T>
 void makeSpeak(const T& animals) {
-    for(const auto& animal : animals) {
+    for (const auto& animal : animals) {
         animal->speak();
     }
 }
 
-int main(){
+int main() {
     std::cout << "Hello World!" << std::endl;
 
     std::vector<std::unique_ptr<Animal>> animals;
