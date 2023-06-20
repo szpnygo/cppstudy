@@ -10,10 +10,6 @@
    - [X] 利用第三方库处理JSON数据
    - [X] 增加错误处理、重试、超时等特性
 
-- [ ] **Error Handling in C++**
-   - [ ] 学习并理解C++中的错误处理机制，如异常(exception)的使用
-   - [ ] 学习如何编写健壮的代码，能够处理运行时可能出现的各种错误
-
 - [ ] **Memory Management in C++**
    - [ ] 学习C++中的内存管理机制，理解栈(stack)和堆(heap)的区别
    - [ ] 理解和使用智能指针（如unique_ptr和shared_ptr）进行内存管理
