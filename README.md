@@ -1,14 +1,14 @@
-- [ ] **Hello World (C++基础和CMake)**
+- [X] **Hello World (C++基础和CMake)**
    - [X] 学习基本的C++语法
    - [X] 编译并运行你的第一个C++程序
    - [X] 学习如何使用CMake来管理你的项目，包括如何引用第三方库
    - [X] 掌握基础的C++特性，如类、继承、模板、STL等
 
-- [ ] **HTTP Requests and JSON Parser (网络编程和数据处理)**
+- [X] **HTTP Requests and JSON Parser (网络编程和数据处理)**
    - [X] 使用C++发出HTTP请求
    - [X] 处理服务器的响应
    - [X] 利用第三方库处理JSON数据
-   - [ ] 增加错误处理、重试、超时等特性
+   - [X] 增加错误处理、重试、超时等特性
 
 - [ ] **Error Handling in C++**
    - [ ] 学习并理解C++中的错误处理机制，如异常(exception)的使用
