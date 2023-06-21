@@ -10,10 +10,10 @@
    - [X] 利用第三方库处理JSON数据
    - [X] 增加错误处理、重试、超时等特性
 
-- [ ] **Memory Management in C++**
-   - [ ] 学习C++中的内存管理机制，理解栈(stack)和堆(heap)的区别
-   - [ ] 理解和使用智能指针（如unique_ptr和shared_ptr）进行内存管理
-   - [ ] 学习如何防止内存泄漏和其他常见的内存问题
+- [X] **Memory Management in C++**
+   - [X] 学习C++中的内存管理机制，理解栈(stack)和堆(heap)的区别
+   - [X] 理解和使用智能指针（如unique_ptr和shared_ptr）进行内存管理
+   - [X] 学习如何防止内存泄漏和其他常见的内存问题
 
 - [ ] **Multithreading (并行和并发)**
    - [ ] 学习C++的多线程编程、异步编程以及同步原语（如互斥锁和条件变量）
