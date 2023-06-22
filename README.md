@@ -15,11 +15,11 @@
    - [X] 理解和使用智能指针（如unique_ptr和shared_ptr）进行内存管理
    - [X] 学习如何防止内存泄漏和其他常见的内存问题
 
-- [ ] C++ Advanced Features (C++的高级特性)
-   - [ ] 学习和理解C++17中新增的特性，包括但不限于结构化绑定（Structured bindings）、if constexpr、std::optional、std::variant等，并通过实践加深理解。
-   - [ ] 深入理解左值、右值、左值引用、右值引用的概念，明白C++11引入的移动语义和右值引用，并通过实践了解其优点及适用场景。
-   - [ ] 探索模板的高级用法，包括理解和应用模板元编程，掌握一些常用的元编程技术，如SFINAE（Substitution Failure Is Not An Error，替换失败并非错误）、类型萃取等。
-   - [ ] 学习理解完美转发（Perfect Forwarding）的概念和用法，理解std::forward的工作原理，实践在函数模板中使用std::forward进行参数转发。
+- [X] **C++ Advanced Features (C++的高级特性)**
+   - [X] 学习和理解C++17中新增的特性，包括但不限于结构化绑定（Structured bindings）、if constexpr、std::optional、std::variant等，并通过实践加深理解。
+   - [X] 深入理解左值、右值、左值引用、右值引用的概念，明白C++11引入的移动语义和右值引用，并通过实践了解其优点及适用场景。
+   - [X] 探索模板的高级用法，包括理解和应用模板元编程，掌握一些常用的元编程技术，如SFINAE（Substitution Failure Is Not An Error，替换失败并非错误）、类型萃取等。
+   - [X] 学习理解完美转发（Perfect Forwarding）的概念和用法，理解std::forward的工作原理，实践在函数模板中使用std::forward进行参数转发。
 
 - [ ] **Multithreading (并行和并发)**
    - [ ] 学习C++的多线程编程、异步编程以及同步原语（如互斥锁和条件变量）
