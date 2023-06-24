@@ -21,9 +21,9 @@
    - [X] 探索模板的高级用法，包括理解和应用模板元编程，掌握一些常用的元编程技术，如SFINAE（Substitution Failure Is Not An Error，替换失败并非错误）、类型萃取等。
    - [X] 学习理解完美转发（Perfect Forwarding）的概念和用法，理解std::forward的工作原理，实践在函数模板中使用std::forward进行参数转发。
 
-- [ ] **Multithreading (并行和并发)**
-   - [ ] 学习C++的多线程编程、异步编程以及同步原语（如互斥锁和条件变量）
-   - [ ] 创建一个简单的项目，如一个并发的web爬虫
+- [X] **Multithreading (并行和并发)**
+   - [X] 学习C++的多线程编程、异步编程以及同步原语（如互斥锁和条件变量）
+   - [X] 创建一个简单的项目，如一个并发的web爬虫
 
 - [ ] **Web Server (网络编程深化)**
    - [ ] 学习套接字编程和HTTP协议，创建一个简单的Web服务器，能够处理基本的GET和POST请求

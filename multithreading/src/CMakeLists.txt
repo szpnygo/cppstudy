@@ -1,5 +1,6 @@
 set(SOURCES 
     main.cpp
+    thread_pool.cpp
     # 在此处添加更多源文件
 )
 
