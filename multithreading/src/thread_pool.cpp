@@ -33,7 +33,7 @@ void ThreadPool::worker() {
         // 执行任务，并处理可能抛出的异常
         try {
             task.second();
-        } catch (const std::exception &e) {
+        } catch (const std::exception& e) {
             std::cerr << "Exception in ThreadPool worker: " << e.what() << '\n';
         }
     }
@@ -48,12 +48,12 @@ ThreadPool::~ThreadPool() {
 
     condition.notify_all();
 
-    for (std::thread &worker : workers) {
+    for (std::thread& worker : workers) {
         worker.join();
     }
 
     // 等待所有任务完成
-    for (auto &f : futures) {
+    for (auto& f : futures) {
         f.wait();
     }
 }

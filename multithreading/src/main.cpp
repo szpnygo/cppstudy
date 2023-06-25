@@ -20,12 +20,12 @@ int main() {
     std::vector<std::string> urls = {"url1", "url2", "url3", "url4", "url5"};
 
     // 为每个网址启动一个异步操作
-    for (auto &url : urls) {
+    for (auto& url : urls) {
         results.emplace_back(pool.enqueue(1, fetchDataFromUrl, url));
     }
 
     // 输出每个异步操作的结果
-    for (auto &&result : results) {
+    for (auto&& result : results) {
         std::cout << result.get() << std::endl;
     }
 

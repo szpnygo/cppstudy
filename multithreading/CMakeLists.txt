@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)  # 设定最低版本的CMake要求，你�
 project(Multithreading)                   # 定义项目名称
 
 set(CMAKE_CXX_STANDARD 17)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # 添加include目录到项目的包含目录
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
