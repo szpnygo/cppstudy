@@ -10,12 +10,14 @@ std::optional<HttpRequest>
 HttpRequest::parse_request(const std::string& request) {
     // 定义HttpRequest结构用于存储解析结果
     HttpRequest result;
-    std::istringstream iss(request);
+    std::istringstream iss(request); // 创建字符串输入流
 
     std::string line;
-    std::getline(iss, line);
-    std::istringstream first_line(line);
+    std::getline(iss, line);             // 读取请求行
+    std::istringstream first_line(line); // 创建字符串输入流
     // 从请求行中解析出请求方法、URI和HTTP版本
+    // 例如：GET / HTTP/1.1
+    // 解析结果：method = "GET", uri = "/", version = "HTTP/1.1"
     if (!(first_line >> result.method >> result.uri >> result.version)) {
         return std::nullopt;
     }
