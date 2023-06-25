@@ -1,13 +1,13 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <functional>
-#include <thread>
 #include <condition_variable>
+#include <functional>
 #include <future>
+#include <iostream>
+#include <queue>
 #include <stdexcept>
+#include <thread>
+#include <vector>
 
 // 任务类型
 using TaskType = std::pair<int, std::function<void()>>;
@@ -19,21 +19,22 @@ struct TaskCompare {
     }
 };
 
-
 class ThreadPool {
 public:
     // 构造函数
     ThreadPool(size_t);
 
     // 添加任务到任务队列
-    template<class F, class... Args>
-    auto enqueue(int priority, F&& f, Args&&... args) 
+    template <class F, class... Args>
+    auto enqueue(int priority, F&& f, Args&&... args)
         -> std::future<typename std::invoke_result_t<F, Args...>> {
         using return_type = typename std::invoke_result_t<F, Args...>;
 
         // create task
-        auto task_fn = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
-        auto task = std::make_shared<std::packaged_task<return_type()>>(std::move(task_fn));
+        auto task_fn =
+            std::bind(std::forward<F>(f), std::forward<Args>(args)...);
+        auto task = std::make_shared<std::packaged_task<return_type()>>(
+            std::move(task_fn));
 
         std::future<return_type> res = task->get_future();
 
@@ -41,11 +42,11 @@ public:
             std::unique_lock<std::mutex> lock(queue_mutex);
 
             // don't allow enqueueing after stopping the pool
-            if(stop) {
+            if (stop) {
                 throw std::runtime_error("enqueue on stopped ThreadPool");
             }
 
-            tasks.emplace(priority, [task](){ (*task)(); });
+            tasks.emplace(priority, [task]() { (*task)(); });
         }
 
         condition.notify_one();

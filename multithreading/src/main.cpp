@@ -4,7 +4,7 @@
 std::string fetchDataFromUrl(std::string url) {
     // 模拟网络请求的耗时
     std::this_thread::sleep_for(std::chrono::seconds(2));
-    
+
     // 返回获取到的数据
     return "data from " + url;
 }
@@ -20,14 +20,12 @@ int main() {
     std::vector<std::string> urls = {"url1", "url2", "url3", "url4", "url5"};
 
     // 为每个网址启动一个异步操作
-    for(auto &url : urls) {
-        results.emplace_back(
-            pool.enqueue(1, fetchDataFromUrl, url)
-        );
+    for (auto &url : urls) {
+        results.emplace_back(pool.enqueue(1, fetchDataFromUrl, url));
     }
 
     // 输出每个异步操作的结果
-    for(auto &&result : results) {
+    for (auto &&result : results) {
         std::cout << result.get() << std::endl;
     }
 
