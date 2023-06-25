@@ -1,0 +1,15 @@
+{
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}/build",
+        "--background-index",
+        "--pch-storage=memory",
+        "--header-insertion=iwyu",
+        "--completion-style=detailed",
+        "--log=verbose",
+        "--pretty",
+    ],
+    "clangd.fallbackFlags": [
+        "-std=c++17",
+        "-I ${workspaceFolder}/include",
+    ]
+}
