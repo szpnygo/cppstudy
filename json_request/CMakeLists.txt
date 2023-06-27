@@ -3,6 +3,8 @@ project(json_request)
 
 set(CMAKE_CXX_STANDARD 17)
 
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -19,5 +21,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(cpr nlohmann_json)
 
-add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr nlohmann_json::nlohmann_json)
+add_executable(${CMAKE_PROJECT_NAME} src/main.cpp src/request.cpp)
+
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE cpr::cpr nlohmann_json::nlohmann_json)
+
