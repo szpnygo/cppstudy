@@ -2,7 +2,7 @@ import requests
 import json
 
 # OpenAI API相关信息
-API_KEY = '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'  # 替换为您的OpenAI API密钥
+API_KEY = 'YOUR_OPENAI_API_KEY'  # 替换为您的OpenAI API密钥
 MODEL_NAME = 'text-embedding-ada-002'
 
 # 输入和输出文件路径
