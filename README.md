@@ -38,7 +38,7 @@
 - [X] **Unit Testing in C++**
    - [X] 学习C++的单元测试方法和工具，例如Google Test
    - [X] 学习如何编写可测试的代码，理解单元测试的重要性
-   - [ ] 为之前的demo添加测试
+   - [X] 为之前的demo添加测试
 
 - [ ] **Vector Search with HNSWlib**
    - [ ] 学习HNSWlib的使用，创建一个简单的应用程序，如一个图像检索系统，来应用向量搜索

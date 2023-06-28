@@ -1,0 +1,5 @@
+include(GoogleTest)
+
+add_executable(request_test request_test.cpp)
+target_link_libraries(request_test gtest_main request_lib)
+gtest_discover_tests(request_test)

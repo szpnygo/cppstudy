@@ -5,15 +5,12 @@
 #include <nlohmann/json.hpp>
 
 const int MAX_RETRIES = 3;
-std::mutex cout_mutex;       // 保护 std::cout 的锁
-std::atomic<int> counter(0); // 计数器
 
 std::string ApiRequest::request(const std::string& url) {
-    std::cout << "Requesting " << url << '\n';
 
-    for (int i = 0; i < MAX_RETRIES; ++i) {           // 重试循环
-        std::lock_guard<std::mutex> lock(cout_mutex); // 保护计数器的锁
-        ++counter;
+    for (int i = 0; i < MAX_RETRIES; ++i) {            // 重试循环
+        std::lock_guard<std::mutex> lock(cout_mutex_); // 保护计数器的锁
+        ++counter_;
         cpr::Response r =
             cpr::Get(cpr::Url{url}, cpr::Timeout{1000}); // 设置超时为1000毫秒
         if (r.status_code == 200) {
