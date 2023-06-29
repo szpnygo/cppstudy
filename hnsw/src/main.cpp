@@ -2,17 +2,68 @@
 #include "hnswlib/space_ip.h"
 #include "hnswlib/space_l2.h"
 
+#include <fstream>
 #include <hnswlib/hnswlib.h>
+#include <iomanip>
 #include <iostream>
 #include <random>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <vector>
 
-int main() {
+struct Item {
+    int index;
+    std::string key;
+    std::vector<float> embedding;
+};
 
-    int dim = 128;            // 定义元素的维度
-    int max_elements = 10000; // 定义最大元素数量，这个值应该预先知道
+void normalize(std::vector<float>& v) {
+    float sum = 0;
+    for (const auto& val : v) {
+        sum += val * val;
+    }
+    float norm = std::sqrt(sum);
+    for (auto& val : v) {
+        val /= norm;
+    }
+}
+
+int main() {
+    //读取文件
+    std::ifstream file("../data/output.txt");
+    if (file.fail()) {
+        throw std::runtime_error("failed to open file");
+    }
+
+    std::vector<Item> items;
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::string index, key, embedding;
+        if (std::getline(iss, index, ':') && std::getline(iss, key, ':') &&
+            std::getline(iss, embedding)) {
+
+            Item item;
+            item.index = std::stoi(index);
+            item.key = key;
+            item.embedding = std::vector<float>();
+            std::istringstream iss2(embedding);
+            std::string embedding_value;
+            while (std::getline(iss2, embedding_value, ',')) {
+                item.embedding.push_back(std::stof(embedding_value));
+            }
+            normalize(item.embedding);
+            items.push_back(item);
+        }
+    }
+
+    std::cout << "items size: " << items.size() << std::endl;
+
+    int dim = 1536;         // 定义元素的维度
+    int max_elements = 200; // 定义最大元素数量，这个值应该预先知道
     int M = 16; // 与数据的内部维度度紧密相关，严重影响内存消耗
     int ef_construction = 200; // 控制索引搜索速度和构建速度之间的权衡
 
@@ -21,36 +72,32 @@ int main() {
     hnswlib::HierarchicalNSW<float> alg_hnsw(
         &space, max_elements, M, ef_construction);
 
-    // 生成随机数据
-    std::mt19937 rng;
-    rng.seed(47);                                  // 设置随机数种子
-    std::uniform_real_distribution<> distrib_real; // 创建实数均匀分布生成器
-    std::vector<std::vector<float>> data; // 存储所有数据的容器
-    for (int i = 0; i < max_elements; ++i) {
-        std::vector<float> vec(dim); // 创建一个元素（向量）
-        for (int j = 0; j < dim; ++j) {
-            vec[j] = distrib_real(rng); // 向量的每个维度赋予一个随机值
-        }
-        data.push_back(vec); // 将元素添加到数据容器中
+    for (const auto& item : items) {
+        alg_hnsw.addPoint(&item.embedding[0], item.index);
     }
 
-    // 将数据添加到索引中
-    for (int i = 0; i < max_elements; i++) {
-        alg_hnsw.addPoint(&data[i][0], i); // 将数据点添加到 HNSW 索引中
+    //查询
+    auto queryItem = items[4];
+    std::cout << "query item: " << queryItem.index << queryItem.key
+              << std::endl;
+
+    normalize(queryItem.embedding);
+
+    std::priority_queue<std::pair<float, hnswlib::labeltype>> result =
+        alg_hnsw.searchKnn(&queryItem.embedding[0], 10);
+
+    std::vector<std::pair<float, hnswlib::labeltype>> vec;
+
+    while (!result.empty()) {
+        vec.push_back(result.top());
+        result.pop();
     }
 
-    // 用自身数据查询元素并计算召回率
-    float correct = 0;
-    for (int i = 0; i < max_elements; i++) {
-        // 执行 KNN 搜索，参数分别为数据和搜索的最近邻居数量
-        std::priority_queue<std::pair<float, hnswlib::labeltype>> result =
-            alg_hnsw.searchKnn(&data[i][0], 1);
-        hnswlib::labeltype label = result.top().second; // 获取搜索结果的标签
-        if (label == i)
-            correct++; // 如果结果的标签与期望的标签一致，则正确数量加1
+    std::cout << "search result: " << std::endl;
+    for (auto it = vec.rbegin(); it != vec.rend(); ++it) {
+        std::cout << it->first << " " << it->second << " "
+                  << items[it->second - 1].key << std::endl;
     }
-    float recall = correct / max_elements;     // 计算召回率
-    std::cout << "Recall: " << recall << "\n"; // 打印召回率
 
     return 0;
 }
