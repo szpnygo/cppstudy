@@ -30,6 +30,16 @@ void normalize(std::vector<float>& v) {
     }
 }
 
+template <typename dist_t>
+class MyHNSW : public hnswlib::HierarchicalNSW<dist_t> {
+  public:
+    using hnswlib::HierarchicalNSW<dist_t>::HierarchicalNSW;
+
+    void newSaveIndex(const std::string& location) {
+        this->saveIndex(location);
+    }
+};
+
 int main() {
     //读取文件
     std::ifstream file("../data/output.txt");
@@ -69,8 +79,7 @@ int main() {
 
     hnswlib::InnerProductSpace space(dim);
 
-    hnswlib::HierarchicalNSW<float> alg_hnsw(
-        &space, max_elements, M, ef_construction);
+    MyHNSW<float> alg_hnsw(&space, max_elements, M, ef_construction);
 
     for (const auto& item : items) {
         alg_hnsw.addPoint(&item.embedding[0], item.index);
@@ -98,6 +107,8 @@ int main() {
         std::cout << it->first << " " << it->second << " "
                   << items[it->second - 1].key << std::endl;
     }
+
+    // alg_hnsw.newSaveIndex("../data/index.bin");
 
     return 0;
 }
