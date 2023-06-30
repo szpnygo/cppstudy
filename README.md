@@ -40,9 +40,9 @@
    - [X] 学习如何编写可测试的代码，理解单元测试的重要性
    - [X] 为之前的demo添加测试
 
-- [ ] **Vector Search with HNSWlib**
-   - [ ] 学习HNSWlib的使用，创建一个简单的应用程序，如一个图像检索系统，来应用向量搜索
-   - [ ] 对HNSWlib的数据结构进行持久化，使其能够在程序重启后重新加载
+- [X] **Vector Search with HNSWlib**
+   - [X] 学习HNSWlib的使用，创建一个简单的应用程序，如一个图像检索系统，来应用向量搜索
+   - [X] 对HNSWlib的数据结构进行持久化，使其能够在程序重启后重新加载
 
 - [ ] **Building Your Vector Database**
    - [ ] 将上述所有的技术整合到一起，创建你的向量数据库
