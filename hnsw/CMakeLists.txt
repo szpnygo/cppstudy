@@ -15,6 +15,8 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(hnsw_lib)
 
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
 include_directories(${hnsw_lib_SOURCE_DIR})
 
 add_subdirectory(src)
