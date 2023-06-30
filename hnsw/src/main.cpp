@@ -21,7 +21,7 @@ struct Item {
 };
 
 int main() {
-    //读取文件
+    // 读取文件
     std::ifstream file("../data/output.txt");
     if (file.fail()) {
         throw std::runtime_error("failed to open file");
@@ -65,7 +65,7 @@ int main() {
         alg_hnsw.addPoint(&item.embedding[0], item.index);
     }
 
-    //查询
+    // 查询
     auto queryItem = items[4];
     std::cout << "query item: " << queryItem.index << queryItem.key
               << std::endl;

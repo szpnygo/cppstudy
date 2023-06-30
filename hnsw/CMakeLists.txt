@@ -13,7 +13,19 @@ FetchContent_Declare(
   GIT_TAG        v0.7.0
 )
 
-FetchContent_MakeAvailable(hnsw_lib)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG        v1.13.0
+)
+
+FetchContent_MakeAvailable(hnsw_lib googletest)
+
+# 启用测试功能
+include(CTest)
+
+# 添加你的测试代码目录
+add_subdirectory(test)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
