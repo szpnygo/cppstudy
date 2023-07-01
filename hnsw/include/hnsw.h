@@ -12,7 +12,7 @@ class HNSW : public hnswlib::HierarchicalNSW<dist_t> {
         std::ofstream output(location, std::ios::binary);
         std::streampos position;
 
-        writeBinaryPOD(output, "aaaaaaa");
+        // writeBinaryPOD(output, "aaaaaaa");
 
         writeBinaryPOD(output, this->offsetLevel0_);
         writeBinaryPOD(output, this->max_elements_);
@@ -57,9 +57,9 @@ class HNSW : public hnswlib::HierarchicalNSW<dist_t> {
         std::streampos total_filesize = input.tellg();
         input.seekg(0, input.beg);
 
-        char buffer[8];
-        readBinaryPOD(input, buffer);
-        std::cout << buffer << std::endl;
+        // char buffer[8];
+        // readBinaryPOD(input, buffer);
+        // std::cout << buffer << std::endl;
         readBinaryPOD(input, this->offsetLevel0_);
         readBinaryPOD(input, this->max_elements_);
         readBinaryPOD(input, this->cur_element_count);
