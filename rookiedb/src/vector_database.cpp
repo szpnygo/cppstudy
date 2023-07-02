@@ -1,5 +1,7 @@
 #include "vector_database.h"
 
+#include "hnswlib/hnswlib.h"
+
 #include <vector>
 
 VectorDatabase::VectorDatabase(const std::string& name,
@@ -87,4 +89,25 @@ uint64_t VectorDatabase::getInternalID(uint64_t id) {
     }
 
     return search->second;
+};
+
+std::vector<std::pair<uint64_t, float>> VectorDatabase::search(
+    std::vector<float>& query_data, size_t k, SearchFilter* isIdAllowed) {
+
+    if (normalize_) {
+        normalize(query_data);
+    }
+
+    auto originalResult = db_->searchKnn(query_data.data(), k, isIdAllowed);
+
+    std::vector<std::pair<uint64_t, float>> result;
+    result.reserve(originalResult.size());
+
+    while (!originalResult.empty()) {
+        auto pair = originalResult.top();
+        result.emplace_back(pair.second, pair.first);
+        originalResult.pop();
+    }
+
+    return result;
 };

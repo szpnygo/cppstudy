@@ -1,12 +1,22 @@
 #pragma once
 
 #include "hnswlib/hnswalg.h"
+#include "hnswlib/hnswlib.h"
 #include "hnswlib/space_ip.h"
 
 #include <_types/_uint64_t.h>
 #include <cstddef>
 #include <string>
 #include <vector>
+
+class SearchFilter : public hnswlib::BaseFilterFunctor {
+  public:
+    bool operator()(hnswlib::labeltype label_id) override {
+        return operator()(label_id);
+    }
+
+    virtual bool operator()(uint64_t id) { return true; }
+};
 
 class VectorDatabase {
   public:
@@ -54,6 +64,12 @@ class VectorDatabase {
 
     // resize the database
     void resizeIndex(size_t new_max_elements);
+
+    // search the database
+    std::vector<std::pair<uint64_t, float>>
+    search(std::vector<float>& query_data,
+           size_t k,
+           SearchFilter* isIdAllowed = nullptr);
 
   private:
     std::string name_;

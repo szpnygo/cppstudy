@@ -14,6 +14,17 @@ class VectorDatabaseTest : public ::testing::Test {
     virtual void TearDown() override { delete db; }
 };
 
+class VectorDatabaseNormalize : public ::testing::Test {
+  protected:
+    VectorDatabase* db;
+
+    virtual void SetUp() override {
+        db = new VectorDatabase("test", 3, 1000, 16, 200, true);
+    }
+
+    virtual void TearDown() override { delete db; }
+};
+
 TEST_F(VectorDatabaseTest, Init) { ASSERT_EQ(db->name(), "test"); }
 
 TEST_F(VectorDatabaseTest, Add) {
@@ -117,10 +128,10 @@ TEST_F(VectorDatabaseTest, ResizeMaxElements) {
     ASSERT_EQ(db->getMaxElements(), 1200);
 }
 
-TEST(VectorDatabase, Normalize) {
+TEST_F(VectorDatabaseNormalize, Normalize) {
     VectorDatabase db("test", 5, 1000, 16, 200, true);
 
-    std::vector<float> data = {1, 2, 3, 4, 5};
+    std::vector<float> data = {1, 2, 3};
     db.add(1, data);
 
     auto result = db.get(1);
@@ -130,7 +141,7 @@ TEST(VectorDatabase, Normalize) {
         ASSERT_TRUE(item >= 0 && item <= 1);
     }
 
-    std::vector<float> original = {1, 2, 3, 4, 5};
+    std::vector<float> original = {1, 2, 3};
     float sum = 0;
     for (const auto& val : original) {
         sum += val * val;
@@ -140,7 +151,7 @@ TEST(VectorDatabase, Normalize) {
         val /= norm;
     }
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 3; i++) {
         ASSERT_EQ(result[i], original[i]);
     }
 }
