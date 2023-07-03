@@ -107,25 +107,25 @@
    - [ ] 优化和调试向量数据库的CUDA实现
    - [ ] 对整个项目进行全面的测试和优化，确保其可靠性和效率
 
-- [ ] **WebRTC屏幕捕捉及数据通道 (WebRTC Screen Capture and Data Channels)**
+- [ ] **WebRTC Screen Capture and Data Channels (WebRTC屏幕捕捉及数据通道 )**
    - [ ] 学习WebRTC库的基本使用和结构
    - [ ] 实现使用WebRTC捕获屏幕的视频流
    - [ ] 学习WebRTC的数据通道，用于传输非音视频数据
    - [ ] 实现使用WebRTC的数据通道发送和接收简单消息
 
-- [ ] **WebRTC视频编解码 (WebRTC Video Codec)**
+- [ ] **WebRTC Video Codec (WebRTC视频编解码 )**
    - [ ] 深入学习WebRTC的媒体流处理，包括音频视频编解码
    - [ ] 实现H264编解码操作，理解编解码对于视频质量和网络传输的影响
    - [ ] 使用WebRTC进行视频流的发送和接收，实现基于WebRTC的点对点视频通话
    - [ ] 测试并优化视频流的传输效率，学习如何处理网络波动情况
 
-- [ ] **操作捕捉与反馈 (Operation Capture and Feedback)**
+- [ ] **Operation Capture and Feedback (操作捕捉与反馈 )**
    - [ ] 学习并实现对鼠标操作的捕捉，理解操作系统的事件机制
    - [ ] 学习并实现对键盘操作的捕捉，理解如何处理不同类型的键盘输入
    - [ ] 通过WebRTC的数据通道发送捕捉到的操作，理解如何将操作数据进行序列化和反序列化
    - [ ] 在远程端接收和处理操作数据，实现对远程系统的基本操作
 
-- [ ] **远程桌面系统整合 (Remote Desktop System Integration)**
+- [ ] **Remote Desktop System Integration (远程桌面系统整合 )**
    - [ ] 将前面所有的技术整合起来，设计并创建你的远程桌面系统
    - [ ] 实现并发控制和错误恢复，理解在实际项目中如何处理这些复杂问题
    - [ ] 理解并处理可能出现的性能问题，如内存管理，CPU利用率等
