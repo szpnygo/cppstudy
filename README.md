@@ -49,3 +49,35 @@
    - [ ] 在这个阶段，进行一些设计和架构的工作，处理一些更复杂的问题，如并发控制和错误恢复
    - [ ] 在项目的开发过程中应用所学的错误处理和内存管理知识，确保代码的健壮性
    - [ ] 利用单元测试方法和工具进行全面的测试，确保项目的可用性
+
+- [ ] **Basic Graphics Programming with OpenGL (OpenGL图形编程基础)**
+   - [ ] 学习OpenGL的渲染管线和基础概念
+   - [ ] 使用OpenGL创建窗口并渲染简单的2D形状
+   - [ ] 使用OpenGL渲染3D几何形状，并应用基本的光照模型
+
+- [ ] **Basics of Filament Library (使用Filament库基础)**
+   - [ ] 学习并理解Filament库的基本结构和主要类/函数
+   - [ ] 在C++程序中集成并配置Filament库
+   - [ ] 使用Filament创建简单的3D场景，例如添加光源、摄像机和基本几何体
+   - [ ] 学习和实现Filament的基本材质系统
+   - [ ] 使用Filament库加载和渲染3D模型
+
+- [ ] **Physically Based Rendering with Filament (物理基础渲染与Filament)**
+   - [ ] 学习物理基础渲染（PBR）的基本理论和技术
+   - [ ] 使用Filament库实现PBR渲染
+   - [ ] 在一个3D模型上应用PBR材质
+
+- [ ] **Rendering Performance Optimization (渲染性能优化)**
+   - [ ] 学习关于3D渲染性能优化的常见技术，如LOD、空间分区等
+   - [ ] 在Filament渲染中应用至少一种优化技术
+   - [ ] 通过工具进行性能分析，对比优化前后的效果
+
+- [ ] **Video Streaming with WebRTC (使用WebRTC库进行视频流传输)**
+   - [ ] 学习WebRTC的基本结构和API
+   - [ ] 使用WebRTC实现视频流的捕获
+   - [ ] 实现通过WebRTC进行视频流的发送和接收
+
+- [ ] **Combining WebRTC with 3D Rendering (将WebRTC和3D渲染结合)**
+   - [ ] 将3D渲染的结果作为WebRTC视频流的输入
+   - [ ] 实现WebRTC视频流的发送和在Web前端的接收
+   - [ ] 在Web前端实现视频流的播放
