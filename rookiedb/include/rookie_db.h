@@ -1,5 +1,6 @@
 #pragma once
 
+#include "extra_attributes.h"
 #include "vector_database.h"
 
 #include <memory>
@@ -12,6 +13,11 @@ class VecData {
 
     uint64_t id;
     std::vector<float> v;
+    std::unordered_map<std::string, Value> attributes;
+
+    void setAttribute(const std::string& key, Value value) {
+        attributes[key] = value;
+    }
 };
 
 class RookieDB {

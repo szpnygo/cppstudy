@@ -8,60 +8,123 @@ class ExtraAttributesTest : public ::testing::Test {
     ExtraAttributes store;
 };
 
-TEST_F(ExtraAttributesTest, Insert) {
-    store.insert("key", "subkey", 1);
-    auto result = store.get("key", "subkey");
-    ASSERT_TRUE(result.has_value());
-    ASSERT_EQ(std::get<int>(result.value()), 1);
+// Test for insert and get methods
+TEST_F(ExtraAttributesTest, InsertAndGet) {
+    store.insert(123, "foo", "bar");
 
-    store.insert("key", "subkey2", "value");
-    auto result2 = store.get("key", "subkey2");
-    ASSERT_TRUE(result2.has_value());
-    ASSERT_EQ(std::get<std::string>(result2.value()), "value");
+    std::optional<Value> value = store.get(123, "foo");
 
-    auto result3 = store.get("key", "subkey3");
-    ASSERT_FALSE(result3.has_value());
-
-    store.insert("key2", "subkey", 1);
-    auto result4 = store.get("key2", "subkey");
-    ASSERT_TRUE(result4.has_value());
+    ASSERT_TRUE(value.has_value());
+    ASSERT_EQ(std::get<std::string>(*value), "bar");
 }
 
-TEST_F(ExtraAttributesTest, Del) {
-    store.insert("key", "subkey", 1);
-    store.erase("key", "subkey");
-    auto result = store.get("key", "subkey");
-    ASSERT_FALSE(result.has_value());
+// Test for erase method
+TEST_F(ExtraAttributesTest, Erase) {
+    store.insert(123, "foo", "bar");
+    store.erase(123, "foo");
+
+    std::optional<Value> value = store.get(123, "foo");
+
+    ASSERT_FALSE(value.has_value());
 }
 
-TEST_F(ExtraAttributesTest, MultiThreadedOperationsSameKey) {
-    std::thread t1([&]() { store.insert("key1", "key2", "value1"); });
-    std::thread t2([&]() { store.insert("key1", "key3", "value2"); });
+// Test for concurrent inserts with more threads
+TEST_F(ExtraAttributesTest, ConcurrentInsert) {
+    const int num_threads = 100;
+    std::vector<std::thread> threads;
 
-    t1.join();
-    t2.join();
+    for (int i = 0; i < num_threads; i++) {
+        threads.push_back(std::thread([&, i]() {
+            store.insert(
+                123, "key" + std::to_string(i), "value" + std::to_string(i));
+        }));
+    }
 
-    auto value1 = store.get("key1", "key2");
-    ASSERT_TRUE(value1.has_value());
-    ASSERT_EQ(std::get<std::string>(value1.value()), "value1");
+    for (auto& t : threads) {
+        t.join();
+    }
 
-    auto value2 = store.get("key1", "key3");
-    ASSERT_TRUE(value2.has_value());
-    ASSERT_EQ(std::get<std::string>(value2.value()), "value2");
+    for (int i = 0; i < num_threads; i++) {
+        std::optional<Value> value = store.get(123, "key" + std::to_string(i));
+        ASSERT_TRUE(value.has_value());
+        ASSERT_EQ(std::get<std::string>(*value), "value" + std::to_string(i));
+    }
 }
 
-TEST_F(ExtraAttributesTest, MultiThreadedOperationDifferentKey) {
-    std::thread t1([&]() { store.insert("key1", "key2", "value1"); });
-    std::thread t2([&]() { store.insert("key2", "key3", "value2"); });
+// Test for concurrent inserts and deletes
+TEST_F(ExtraAttributesTest, ConcurrentInsertAndDelete) {
+    const int num_threads = 100;
+    std::vector<std::thread> threads;
 
-    t1.join();
-    t2.join();
+    for (int i = 0; i < num_threads; i++) {
+        if (i % 2 == 0) {
+            threads.push_back(std::thread([&, i]() {
+                store.insert(123,
+                             "key" + std::to_string(i),
+                             "value" + std::to_string(i));
+            }));
+        } else {
+            threads.push_back(std::thread(
+                [&, i]() { store.erase(123, "key" + std::to_string(i)); }));
+        }
+    }
 
-    auto value1 = store.get("key1", "key2");
-    ASSERT_TRUE(value1.has_value());
-    ASSERT_EQ(std::get<std::string>(value1.value()), "value1");
+    for (auto& t : threads) {
+        t.join();
+    }
 
-    auto value2 = store.get("key2", "key3");
-    ASSERT_TRUE(value2.has_value());
-    ASSERT_EQ(std::get<std::string>(value2.value()), "value2");
+    for (int i = 0; i < num_threads; i++) {
+        std::optional<Value> value = store.get(123, "key" + std::to_string(i));
+        if (i % 2 == 0) {
+            ASSERT_TRUE(value.has_value());
+            ASSERT_EQ(std::get<std::string>(*value),
+                      "value" + std::to_string(i));
+        } else {
+            ASSERT_FALSE(value.has_value());
+        }
+    }
+}
+
+// Test for concurrent inserts on the same sub-key
+TEST_F(ExtraAttributesTest, ConcurrentInsertSameSubKey) {
+    const int num_threads = 100;
+    std::vector<std::thread> threads;
+
+    for (int i = 0; i < num_threads; i++) {
+        threads.push_back(std::thread(
+            [&, i]() { store.insert(i, "key", "value" + std::to_string(i)); }));
+    }
+
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    for (int i = 0; i < num_threads; i++) {
+        std::optional<Value> value = store.get(i, "key");
+        ASSERT_TRUE(value.has_value());
+        ASSERT_EQ(std::get<std::string>(*value), "value" + std::to_string(i));
+    }
+}
+
+// Test for concurrent inserts on different sub-keys
+TEST_F(ExtraAttributesTest, ConcurrentInsertDifferentSubKeys) {
+    const int num_threads = 100;
+    std::vector<std::thread> threads;
+
+    for (int i = 0; i < num_threads; i++) {
+        threads.push_back(std::thread([&, i]() {
+            store.insert(
+                123, "key" + std::to_string(i), "value" + std::to_string(i));
+        }));
+    }
+
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    for (int i = 0; i < num_threads; i++) {
+        std::optional<Value> value = store.get(123, "key" + std::to_string(i));
+        ASSERT_TRUE(value.has_value());
+        ASSERT_EQ(std::get<std::string>(*value), "value" + std::to_string(i));
+    }
 }

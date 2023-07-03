@@ -8,16 +8,33 @@ ExtraAttributes::ExtraAttributes() {}
 
 ExtraAttributes::~ExtraAttributes() {}
 
-void ExtraAttributes::insert(const std::string& key,
-                             const std::string& subkey,
-                             ExtraAttributes::Value value) {
-    std::unique_lock<std::shared_mutex> lock(mutexes_[key]);
-    storage_[key][subkey] = value;
+std::shared_ptr<std::shared_mutex>
+ExtraAttributes::getMutex(const uint64_t key) {
+    std::lock_guard<std::mutex> lock(global_mutex_);
+    auto [it, inserted] =
+        mutexes_.emplace(key, std::make_shared<std::shared_mutex>());
+    return it->second;
 }
 
-std::optional<ExtraAttributes::Value>
-ExtraAttributes::get(const std::string& key, const std::string& subkey) {
-    std::shared_lock<std::shared_mutex> lock(mutexes_[key]);
+void ExtraAttributes::insert(uint64_t key,
+                             const std::string& subkey,
+                             Value value) {
+    std::unique_lock<std::shared_mutex> lock(*getMutex(key));
+    storage_[key][subkey] = std::move(value);
+}
+
+void ExtraAttributes::insert(uint64_t key,
+                             const std::string& subkey,
+                             std::unordered_map<std::string, Value>& values) {
+    std::unique_lock<std::shared_mutex> lock(*getMutex(key));
+    for (const auto& [k, v] : values) {
+        storage_[key][subkey] = v;
+    }
+}
+
+std::optional<Value> ExtraAttributes::get(uint64_t key,
+                                          const std::string& subkey) {
+    std::shared_lock<std::shared_mutex> lock(*getMutex(key));
     auto it1 = storage_.find(key);
     if (it1 == storage_.end()) {
         return std::nullopt;
@@ -31,8 +48,8 @@ ExtraAttributes::get(const std::string& key, const std::string& subkey) {
     return it2->second;
 }
 
-void ExtraAttributes::erase(const std::string& key, const std::string& subkey) {
-    std::unique_lock<std::shared_mutex> lock(mutexes_[key]);
+void ExtraAttributes::erase(uint64_t key, const std::string& subkey) {
+    std::unique_lock<std::shared_mutex> lock(*getMutex(key));
     auto it1 = storage_.find(key);
     if (it1 == storage_.end()) {
         return;
