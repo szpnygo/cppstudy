@@ -1,6 +1,9 @@
 #include "vector_database.h"
 
+#include <cstddef>
 #include <gtest/gtest.h>
+#include <iostream>
+#include <sstream>
 #include <vector>
 
 class VectorDatabaseTest : public ::testing::Test {
@@ -154,4 +157,41 @@ TEST_F(VectorDatabaseNormalize, Normalize) {
     for (int i = 0; i < 3; i++) {
         ASSERT_EQ(result[i], original[i]);
     }
+}
+
+float recallTest(
+    size_t dim, size_t maxElements, size_t m, size_t ef, bool normalize) {
+    VectorDatabase db("test", dim, maxElements, m, ef, normalize);
+
+    std::mt19937 gen(99);
+    std::uniform_real_distribution<> dis(0, 1);
+
+    std::vector<std::vector<float>> data;
+
+    for (int i = 0; i < maxElements; ++i) {
+        std::vector<float> vec(dim);
+        for (int j = 0; j < dim; ++j) {
+            vec[j] = dis(gen);
+        }
+        data.push_back(vec);
+        db.add(i, data[i]);
+    }
+    float correct = 0;
+
+    for (int i = 0; i < maxElements; ++i) {
+        auto result = db.search(data[i], 10);
+        for (int j = 0; j < 3; ++j) {
+            if (result[j].first == i) {
+                correct++;
+                break;
+            }
+        }
+    }
+
+    return correct / maxElements;
+}
+
+TEST(VectorDataBase, RecallTop3_16_200) {
+    auto recall = recallTest(32, 200, 16, 200, false);
+    EXPECT_GE(recall, 0.8);
 }

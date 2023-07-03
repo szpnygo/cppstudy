@@ -109,5 +109,7 @@ std::vector<std::pair<uint64_t, float>> VectorDatabase::search(
         originalResult.pop();
     }
 
+    std::reverse(result.begin(), result.end());
+
     return result;
 };

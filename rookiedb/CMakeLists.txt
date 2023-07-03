@@ -27,6 +27,8 @@ include(CTest)
 # 添加你的测试代码目录
 add_subdirectory(test)
 
+add_subdirectory(benchmarks)
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 include_directories(${hnsw_lib_SOURCE_DIR})

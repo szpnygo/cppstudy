@@ -1,0 +1,4 @@
+include_directories(${hnsw_lib_SOURCE_DIR})
+
+add_executable(vector_database_benchmark benchmark_recall.cpp)
+target_link_libraries(vector_database_benchmark rookiedb)
