@@ -31,25 +31,41 @@ TEST_F(RookieDBTest, CreateTable) {
 TEST_F(RookieDBWithTableTest, Add) {
     std::vector<float> v = {1, 2, 3, 4, 5};
     VecData data(1, v);
+    data.setAttribute("test", Value("123"));
     db->add("test", data);
     ASSERT_EQ(db->count("test"), 1);
 
     db->createTable("test2", 5, 200);
     std::vector<float> v3 = {1, 2, 3, 4, 5};
     VecData data3(3, v3);
+    data3.setAttribute("test", Value(1));
     db->add("test2", data3);
     ASSERT_EQ(db->count("test2"), 1);
 
     std::vector<float> v2 = {1, 2, 3, 4, 5};
     VecData data2(2, v2);
+    data2.setAttribute("test", Value(1.1f));
     db->add("test", data2);
     ASSERT_EQ(db->count("test"), 2);
-}
 
-class MySearchFilter : public SearchFilter {
-  protected:
-    bool operator()(uint64_t id) { return id == 3 || id == 4; };
-};
+    auto result = db->get("test", 1);
+    ASSERT_EQ(result.id, 1);
+    ASSERT_TRUE(result.getAttributeAs<std::string>("123").has_value());
+    ASSERT_FALSE(result.getAttributeAs<int>("123").has_value());
+    ASSERT_EQ(std::get<std::string>(result.attributes->at("123")), "test");
+
+    auto result2 = db->get("test", 2);
+    ASSERT_EQ(result2.id, 2);
+    ASSERT_TRUE(result2.getAttributeAs<float>("1.1").has_value());
+    ASSERT_FALSE(result2.getAttributeAs<int>("1.1").has_value());
+    ASSERT_EQ(std::get<float>(result2.attributes->at("1.1")), 1.1f);
+
+    auto result3 = db->get("test2", 3);
+    ASSERT_EQ(result3.id, 3);
+    ASSERT_TRUE(result3.getAttributeAs<int>("1").has_value());
+    ASSERT_FALSE(result3.getAttributeAs<float>("1").has_value());
+    ASSERT_EQ(std::get<int>(result3.attributes->at("1")), 1);
+}
 
 TEST_F(RookieDBWithTableTest, Search) {
     std::vector<float> v = {1, 2, 3, 4, 5};
@@ -78,6 +94,6 @@ TEST_F(RookieDBWithTableTest, Search) {
 
     MySearchFilter* filter = new MySearchFilter();
     std::vector<float> search4 = {1, 2, 3, 4, 5};
-    auto result4 = db->search("test", search4, 15, filter);
+    auto result4 = db->search("test", search4, 15);
     ASSERT_EQ(result4.size(), 2);
 }

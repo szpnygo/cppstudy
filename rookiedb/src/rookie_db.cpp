@@ -33,6 +33,15 @@ VectorDatabase& RookieDB::get(const std::string& name) {
 
 void RookieDB::add(const std::string& name, VecData& data) {
     get(name).add(data.id, data.v);
+    extra_attributes_.add(name, data.id, std::move(data.attributes));
+}
+
+VecData RookieDB::get(const std::string& name, uint64_t id) {
+    auto v = get(name).get(id);
+    auto e = extra_attributes_.Get(name, id);
+    VecData data(id, v);
+    data.attributes = std::make_unique<Attributes>(*e);
+    return data;
 }
 
 size_t RookieDB::count(const std::string& name) { return get(name).count(); }
@@ -45,11 +54,6 @@ void RookieDB::update(const std::string& name,
 
 void RookieDB::erase(const std::string& name, uint64_t id) {
     get(name).erase(id);
-}
-
-VecData RookieDB::get(const std::string& name, uint64_t id) {
-    auto v = get(name).get(id);
-    return VecData(id, v);
 }
 
 bool RookieDB::exists(const std::string& name, uint64_t id) {
