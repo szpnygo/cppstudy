@@ -8,14 +8,17 @@ RookieDB::RookieDB() {}
 RookieDB::~RookieDB() {}
 
 void RookieDB::createTable(const std::string& name,
+                           std::shared_ptr<TableSchema> schema,
                            const size_t dim,
                            const size_t max_elements,
                            const size_t M,
                            const size_t ef_construction,
                            bool normalize) {
 
+    schemas_[name] = schema;
     dbs_[name] = std::make_shared<VectorDatabase>(
         name, dim, max_elements, M, ef_construction, normalize);
+    extra_attributes_.create(name);
 }
 
 bool RookieDB::hasTable(const std::string& name) {
@@ -32,6 +35,7 @@ VectorDatabase& RookieDB::get(const std::string& name) {
 }
 
 void RookieDB::add(const std::string& name, VecData& data) {
+    // check data attributes against schema
     get(name).add(data.id, data.v);
     extra_attributes_.add(name, data.id, std::move(data.attributes));
 }

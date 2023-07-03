@@ -18,12 +18,14 @@ class RookieDBWithTableTest : public RookieDBTest {
   protected:
     virtual void SetUp() override {
         RookieDBTest::SetUp();
-        db->createTable("test", 5, 1000, 16, 200, true);
+        std::shared_ptr<TableSchema> schema = std::make_shared<TableSchema>();
+        db->createTable("test", schema, 5, 1000, 16, 200, true);
     }
 };
 
 TEST_F(RookieDBTest, CreateTable) {
-    db->createTable("test", 5, 1000, 16, 200, false);
+    std::shared_ptr<TableSchema> schema = std::make_shared<TableSchema>();
+    db->createTable("test", schema, 5, 1000, 16, 200, false);
     ASSERT_TRUE(db->hasTable("test"));
     ASSERT_FALSE(db->hasTable("test2"));
 }
@@ -35,12 +37,25 @@ TEST_F(RookieDBWithTableTest, Add) {
     db->add("test", data);
     ASSERT_EQ(db->count("test"), 1);
 
-    db->createTable("test2", 5, 200);
+    auto result = db->get("test", 1);
+    ASSERT_EQ(result.id, 1);
+    ASSERT_TRUE(result.getAttributeAs<std::string>("test").has_value());
+    ASSERT_FALSE(result.getAttributeAs<int>("test").has_value());
+    ASSERT_EQ(std::get<std::string>(result.attributes->at("test")), "123");
+
+    std::shared_ptr<TableSchema> schema = std::make_shared<TableSchema>();
+    db->createTable("test2", schema, 5, 200);
     std::vector<float> v3 = {1, 2, 3, 4, 5};
     VecData data3(3, v3);
     data3.setAttribute("test", Value(1));
     db->add("test2", data3);
     ASSERT_EQ(db->count("test2"), 1);
+
+    auto result3 = db->get("test2", 3);
+    ASSERT_EQ(result3.id, 3);
+    ASSERT_TRUE(result3.getAttributeAs<int>("test").has_value());
+    ASSERT_FALSE(result3.getAttributeAs<float>("test").has_value());
+    ASSERT_EQ(std::get<int>(result3.attributes->at("test")), 1);
 
     std::vector<float> v2 = {1, 2, 3, 4, 5};
     VecData data2(2, v2);
@@ -48,23 +63,11 @@ TEST_F(RookieDBWithTableTest, Add) {
     db->add("test", data2);
     ASSERT_EQ(db->count("test"), 2);
 
-    auto result = db->get("test", 1);
-    ASSERT_EQ(result.id, 1);
-    ASSERT_TRUE(result.getAttributeAs<std::string>("123").has_value());
-    ASSERT_FALSE(result.getAttributeAs<int>("123").has_value());
-    ASSERT_EQ(std::get<std::string>(result.attributes->at("123")), "test");
-
     auto result2 = db->get("test", 2);
     ASSERT_EQ(result2.id, 2);
-    ASSERT_TRUE(result2.getAttributeAs<float>("1.1").has_value());
-    ASSERT_FALSE(result2.getAttributeAs<int>("1.1").has_value());
-    ASSERT_EQ(std::get<float>(result2.attributes->at("1.1")), 1.1f);
-
-    auto result3 = db->get("test2", 3);
-    ASSERT_EQ(result3.id, 3);
-    ASSERT_TRUE(result3.getAttributeAs<int>("1").has_value());
-    ASSERT_FALSE(result3.getAttributeAs<float>("1").has_value());
-    ASSERT_EQ(std::get<int>(result3.attributes->at("1")), 1);
+    ASSERT_TRUE(result2.getAttributeAs<float>("test").has_value());
+    ASSERT_FALSE(result2.getAttributeAs<int>("test").has_value());
+    ASSERT_EQ(std::get<float>(result2.attributes->at("test")), 1.1f);
 }
 
 TEST_F(RookieDBWithTableTest, Search) {
@@ -91,9 +94,4 @@ TEST_F(RookieDBWithTableTest, Search) {
     std::vector<float> search3 = {1, 2, 3, 4, 5};
     auto result3 = db->search("test", search3, 15);
     ASSERT_EQ(result3.size(), 11);
-
-    MySearchFilter* filter = new MySearchFilter();
-    std::vector<float> search4 = {1, 2, 3, 4, 5};
-    auto result4 = db->search("test", search4, 15);
-    ASSERT_EQ(result4.size(), 2);
 }
