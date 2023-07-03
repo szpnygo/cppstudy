@@ -41,7 +41,7 @@ class VectorDatabase {
     void update(uint64_t id, std::vector<float>& v);
 
     // remove a vector from the database
-    void del(uint64_t id);
+    void erase(uint64_t id);
 
     // get a vector from the database
     // id: the id of the vector

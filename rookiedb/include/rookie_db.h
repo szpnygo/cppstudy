@@ -33,7 +33,7 @@ class RookieDB {
 
     void update(const std::string& name, uint64_t id, std::vector<float>& v);
 
-    void del(const std::string& name, uint64_t id);
+    void erase(const std::string& name, uint64_t id);
 
     VecData get(const std::string& name, uint64_t id);
 

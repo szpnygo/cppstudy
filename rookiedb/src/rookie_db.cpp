@@ -43,7 +43,9 @@ void RookieDB::update(const std::string& name,
     get(name).update(id, v);
 }
 
-void RookieDB::del(const std::string& name, uint64_t id) { get(name).del(id); }
+void RookieDB::erase(const std::string& name, uint64_t id) {
+    get(name).erase(id);
+}
 
 VecData RookieDB::get(const std::string& name, uint64_t id) {
     auto v = get(name).get(id);

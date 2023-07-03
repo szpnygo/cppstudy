@@ -45,10 +45,10 @@ TEST_F(VectorDatabaseTest, Del) {
     db->add(2, data2);
     ASSERT_EQ(db->count(), 2);
 
-    db->del(1);
+    db->erase(1);
     ASSERT_EQ(db->count(), 1);
 
-    db->del(2);
+    db->erase(2);
     ASSERT_EQ(db->count(), 0);
 
     ASSERT_EQ(db->count_deleted(), 2);
@@ -116,7 +116,7 @@ TEST_F(VectorDatabaseTest, GetInternalID) {
 
     ASSERT_EQ(db->getInternalID(4), 0);
 
-    db->del(1);
+    db->erase(1);
     ASSERT_EQ(db->getInternalID(1), 0);
 }
 
@@ -165,7 +165,6 @@ float recallTest(
 
     std::mt19937 gen(99);
     std::uniform_real_distribution<> dis(0, 1);
-
     std::vector<std::vector<float>> data;
 
     for (int i = 0; i < maxElements; ++i) {
@@ -177,7 +176,6 @@ float recallTest(
         db.add(i, data[i]);
     }
     float correct = 0;
-
     for (int i = 0; i < maxElements; ++i) {
         auto result = db.search(data[i], 10);
         for (int j = 0; j < 3; ++j) {
@@ -187,7 +185,6 @@ float recallTest(
             }
         }
     }
-
     return correct / maxElements;
 }
 

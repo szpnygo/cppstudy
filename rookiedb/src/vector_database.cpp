@@ -49,7 +49,7 @@ void VectorDatabase::add(uint64_t id, std::vector<float>& v) {
     db_->addPoint(v.data(), id);
 };
 
-void VectorDatabase::del(uint64_t id) { db_->markDelete(id); };
+void VectorDatabase::erase(uint64_t id) { db_->markDelete(id); };
 
 void VectorDatabase::update(uint64_t id, std::vector<float>& v) {
     if (normalize_) {
