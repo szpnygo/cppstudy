@@ -5,3 +5,7 @@ include_directories(${hnsw_lib_SOURCE_DIR})
 add_executable(vector_database_test vector_database_test.cpp)
 target_link_libraries(vector_database_test gtest_main rookiedb)
 gtest_discover_tests(vector_database_test)
+
+add_executable(rookie_db_test rookie_db_test.cpp)
+target_link_libraries(rookie_db_test gtest_main rookiedb)
+gtest_discover_tests(rookie_db_test)

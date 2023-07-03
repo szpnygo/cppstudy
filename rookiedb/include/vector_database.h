@@ -12,7 +12,7 @@
 class SearchFilter : public hnswlib::BaseFilterFunctor {
   public:
     bool operator()(hnswlib::labeltype label_id) override {
-        return operator()(label_id);
+        return operator()(static_cast<uint64_t>(label_id));
     }
 
     virtual bool operator()(uint64_t id) { return true; }
@@ -75,8 +75,8 @@ class VectorDatabase {
     std::string name_;
     bool normalize_;
     size_t max_elements_;
-    hnswlib::InnerProductSpace* space_;
-    hnswlib::HierarchicalNSW<float>* db_;
+    std::unique_ptr<hnswlib::InnerProductSpace> space_;
+    std::unique_ptr<hnswlib::HierarchicalNSW<float>> db_;
 
     void normalize(std::vector<float>& v);
 };

@@ -15,9 +15,9 @@ VectorDatabase::VectorDatabase(const std::string& name,
       max_elements_(max_elements) {
     // init space and db, use cosine similarity, remember all then data should
     // be normalized with InnerProductSpace
-    space_ = new hnswlib::InnerProductSpace(dim);
-    db_ = new hnswlib::HierarchicalNSW<float>(
-        space_, max_elements, M, ef_construction);
+    space_ = std::make_unique<hnswlib::InnerProductSpace>(dim);
+    db_ = std::make_unique<hnswlib::HierarchicalNSW<float>>(
+        space_.get(), max_elements, M, ef_construction);
 };
 
 std::string VectorDatabase::name() { return name_; }
@@ -29,10 +29,7 @@ void VectorDatabase::resizeIndex(size_t new_max_elements) {
 
 size_t VectorDatabase::getMaxElements() { return max_elements_; }
 
-VectorDatabase::~VectorDatabase() {
-    delete space_;
-    delete db_;
-};
+VectorDatabase::~VectorDatabase(){};
 
 void VectorDatabase::normalize(std::vector<float>& v) {
     float sum = 0;
