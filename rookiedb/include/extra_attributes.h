@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 #include <optional>
 #include <shared_mutex>
 #include <unordered_map>
@@ -8,30 +9,29 @@
 
 using Value = std::variant<int, float, long, uint64_t, std::string>;
 
+using Attributes = std::unordered_map<std::string, Value>;
+
+using TableData =
+    std::unordered_map<uint64_t, std::shared_ptr<const Attributes>>;
+
 class ExtraAttributes {
   public:
-    ExtraAttributes();
+    ExtraAttributes() = default;
 
-    ~ExtraAttributes();
+    void create(const std::string& name);
 
-    void initKey(const uint64_t key);
+    void add(const std::string& name,
+             uint64_t id,
+             std::unique_ptr<Attributes> attrs);
 
-    void insert(uint64_t key, const std::string& subkey, Value value);
+    void erase(const std::string& name, uint64_t id);
 
-    void insert(uint64_t key,
-                const std::string& subkey,
-                std::unordered_map<std::string, Value>& values);
-
-    std::optional<Value> get(uint64_t key, const std::string& subkey);
-
-    void erase(uint64_t key, const std::string& subkey);
-
-    std::shared_ptr<std::shared_mutex> getMutex(const uint64_t key);
+    std::shared_ptr<const Attributes> Get(const std::string& table,
+                                          uint64_t id);
 
   private:
-    std::unordered_map<uint64_t, std::unordered_map<std::string, Value>>
-        storage_;
-    std::unordered_map<uint64_t, std::shared_ptr<std::shared_mutex>> mutexes_;
-
+    std::unordered_map<std::string, TableData> tables_;
+    std::unordered_map<std::string, std::shared_ptr<std::shared_mutex>>
+        mutexes_;
     std::mutex global_mutex_;
 };

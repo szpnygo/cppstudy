@@ -1,6 +1,7 @@
 #include "extra_attributes.h"
 
 #include <gtest/gtest.h>
+#include <memory>
 #include <thread>
 
 class ExtraAttributesTest : public ::testing::Test {
@@ -8,123 +9,105 @@ class ExtraAttributesTest : public ::testing::Test {
     ExtraAttributes store;
 };
 
-// Test for insert and get methods
-TEST_F(ExtraAttributesTest, InsertAndGet) {
-    store.insert(123, "foo", "bar");
+TEST_F(ExtraAttributesTest, CreateAndAdd) {
+    // 创建表并添加一些数据
+    store.create("test_table");
+    auto attr = std::make_unique<Attributes>();
+    (*attr)["attr1"] = 1;
+    (*attr)["attr2"] = 2.0f;
+    (*attr)["attr3"] = 3l;
+    (*attr)["attr4"] = 4ull;
+    (*attr)["attr5"] = "test";
+    store.add("test_table", 1, std::move(attr));
 
-    std::optional<Value> value = store.get(123, "foo");
-
-    ASSERT_TRUE(value.has_value());
-    ASSERT_EQ(std::get<std::string>(*value), "bar");
+    // 读取并验证数据
+    auto attr_read = store.Get("test_table", 1);
+    ASSERT_TRUE(attr_read != nullptr);
+    ASSERT_EQ(std::get<int>(attr_read->at("attr1")), 1);
+    ASSERT_EQ(std::get<float>(attr_read->at("attr2")), 2.0f);
+    ASSERT_EQ(std::get<long>(attr_read->at("attr3")), 3l);
+    ASSERT_EQ(std::get<uint64_t>(attr_read->at("attr4")), 4ull);
+    ASSERT_EQ(std::get<std::string>(attr_read->at("attr5")), "test");
 }
 
-// Test for erase method
 TEST_F(ExtraAttributesTest, Erase) {
-    store.insert(123, "foo", "bar");
-    store.erase(123, "foo");
+    // 创建表并添加一些数据
+    store.create("test_table");
+    auto attr = std::make_unique<Attributes>();
+    (*attr)["attr1"] = 1;
+    store.add("test_table", 1, std::move(attr));
 
-    std::optional<Value> value = store.get(123, "foo");
+    // 删除数据
+    store.erase("test_table", 1);
 
-    ASSERT_FALSE(value.has_value());
+    // 验证数据已经被删除
+    ASSERT_EQ(store.Get("test_table", 1), nullptr);
 }
 
-// Test for concurrent inserts with more threads
-TEST_F(ExtraAttributesTest, ConcurrentInsert) {
-    const int num_threads = 100;
-    std::vector<std::thread> threads;
+TEST_F(ExtraAttributesTest, HighConcurrency) {
+    const int kNumThreads = 100;
+    const int kNumOperations = 1000;
+    const int kNumTables = 10;
 
-    for (int i = 0; i < num_threads; i++) {
-        threads.push_back(std::thread([&, i]() {
-            store.insert(
-                123, "key" + std::to_string(i), "value" + std::to_string(i));
+    // 创建多个表
+    for (int i = 0; i < kNumTables; ++i) {
+        store.create("table" + std::to_string(i));
+    }
+
+    std::vector<std::thread> threads;
+    for (int i = 0; i < kNumThreads; ++i) {
+        threads.push_back(std::thread([&, i] {
+            // 写入数据
+            for (int j = 0; j < kNumOperations; ++j) {
+                auto attr = std::make_unique<Attributes>();
+                (*attr)["attr"] = int(i * kNumOperations + j);
+                store.add("table" + std::to_string(i % kNumTables),
+                          i * kNumOperations + j,
+                          std::move(attr));
+            }
+
+            // 读取并验证数据
+            for (int j = 0; j < kNumOperations; ++j) {
+                auto attr_read =
+                    store.Get("table" + std::to_string(i % kNumTables),
+                              i * kNumOperations + j);
+                ASSERT_TRUE(attr_read != nullptr);
+                ASSERT_EQ(std::get<int>(attr_read->at("attr")),
+                          i * kNumOperations + j);
+            }
         }));
     }
 
+    // 等待所有线程完成
     for (auto& t : threads) {
         t.join();
     }
-
-    for (int i = 0; i < num_threads; i++) {
-        std::optional<Value> value = store.get(123, "key" + std::to_string(i));
-        ASSERT_TRUE(value.has_value());
-        ASSERT_EQ(std::get<std::string>(*value), "value" + std::to_string(i));
-    }
 }
 
-// Test for concurrent inserts and deletes
-TEST_F(ExtraAttributesTest, ConcurrentInsertAndDelete) {
-    const int num_threads = 100;
+TEST_F(ExtraAttributesTest, ConcurrencyOnSameKey) {
+    const int kNumThreads = 1000; // 线程数
+    store.create("test_table");
+
+    // 启动多个线程并发执行写入和读取操作
     std::vector<std::thread> threads;
+    for (int i = 0; i < kNumThreads; ++i) {
+        threads.push_back(std::thread([this, i, kNumThreads] {
+            // 写入数据
+            auto attr = std::make_unique<Attributes>();
+            (*attr)["attr"] = i;
+            store.add("test_table", 1, std::move(attr));
 
-    for (int i = 0; i < num_threads; i++) {
-        if (i % 2 == 0) {
-            threads.push_back(std::thread([&, i]() {
-                store.insert(123,
-                             "key" + std::to_string(i),
-                             "value" + std::to_string(i));
-            }));
-        } else {
-            threads.push_back(std::thread(
-                [&, i]() { store.erase(123, "key" + std::to_string(i)); }));
-        }
-    }
-
-    for (auto& t : threads) {
-        t.join();
-    }
-
-    for (int i = 0; i < num_threads; i++) {
-        std::optional<Value> value = store.get(123, "key" + std::to_string(i));
-        if (i % 2 == 0) {
-            ASSERT_TRUE(value.has_value());
-            ASSERT_EQ(std::get<std::string>(*value),
-                      "value" + std::to_string(i));
-        } else {
-            ASSERT_FALSE(value.has_value());
-        }
-    }
-}
-
-// Test for concurrent inserts on the same sub-key
-TEST_F(ExtraAttributesTest, ConcurrentInsertSameSubKey) {
-    const int num_threads = 100;
-    std::vector<std::thread> threads;
-
-    for (int i = 0; i < num_threads; i++) {
-        threads.push_back(std::thread(
-            [&, i]() { store.insert(i, "key", "value" + std::to_string(i)); }));
-    }
-
-    for (auto& t : threads) {
-        t.join();
-    }
-
-    for (int i = 0; i < num_threads; i++) {
-        std::optional<Value> value = store.get(i, "key");
-        ASSERT_TRUE(value.has_value());
-        ASSERT_EQ(std::get<std::string>(*value), "value" + std::to_string(i));
-    }
-}
-
-// Test for concurrent inserts on different sub-keys
-TEST_F(ExtraAttributesTest, ConcurrentInsertDifferentSubKeys) {
-    const int num_threads = 100;
-    std::vector<std::thread> threads;
-
-    for (int i = 0; i < num_threads; i++) {
-        threads.push_back(std::thread([&, i]() {
-            store.insert(
-                123, "key" + std::to_string(i), "value" + std::to_string(i));
+            // 读取并验证数据
+            auto attr_read = store.Get("test_table", 1);
+            ASSERT_TRUE(attr_read != nullptr);
+            // 由于是并发环境，我们无法保证读取到的值就是这个线程写入的值，因此这里只能检查读取到的值在预期的范围内
+            ASSERT_GE(std::get<int>(attr_read->at("attr")), 0);
+            ASSERT_LT(std::get<int>(attr_read->at("attr")), kNumThreads);
         }));
     }
 
+    // 等待所有线程完成
     for (auto& t : threads) {
         t.join();
-    }
-
-    for (int i = 0; i < num_threads; i++) {
-        std::optional<Value> value = store.get(123, "key" + std::to_string(i));
-        ASSERT_TRUE(value.has_value());
-        ASSERT_EQ(std::get<std::string>(*value), "value" + std::to_string(i));
     }
 }

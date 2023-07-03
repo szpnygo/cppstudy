@@ -1,63 +1,36 @@
 #include "extra_attributes.h"
 
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <shared_mutex>
 
-ExtraAttributes::ExtraAttributes() {}
-
-ExtraAttributes::~ExtraAttributes() {}
-
-std::shared_ptr<std::shared_mutex>
-ExtraAttributes::getMutex(const uint64_t key) {
+void ExtraAttributes::create(const std::string& name) {
     std::lock_guard<std::mutex> lock(global_mutex_);
-    auto [it, inserted] =
-        mutexes_.emplace(key, std::make_shared<std::shared_mutex>());
-    return it->second;
-}
-
-void ExtraAttributes::insert(uint64_t key,
-                             const std::string& subkey,
-                             Value value) {
-    std::unique_lock<std::shared_mutex> lock(*getMutex(key));
-    storage_[key][subkey] = std::move(value);
-}
-
-void ExtraAttributes::insert(uint64_t key,
-                             const std::string& subkey,
-                             std::unordered_map<std::string, Value>& values) {
-    std::unique_lock<std::shared_mutex> lock(*getMutex(key));
-    for (const auto& [k, v] : values) {
-        storage_[key][subkey] = v;
+    if (tables_.find(name) == tables_.end()) {
+        tables_[name] = TableData();
+        mutexes_[name] = std::make_shared<std::shared_mutex>();
     }
 }
 
-std::optional<Value> ExtraAttributes::get(uint64_t key,
-                                          const std::string& subkey) {
-    std::shared_lock<std::shared_mutex> lock(*getMutex(key));
-    auto it1 = storage_.find(key);
-    if (it1 == storage_.end()) {
-        return std::nullopt;
-    }
-
-    auto it2 = it1->second.find(subkey);
-    if (it2 == it1->second.end()) {
-        return std::nullopt;
-    }
-
-    return it2->second;
+void ExtraAttributes::add(const std::string& name,
+                          uint64_t id,
+                          std::unique_ptr<Attributes> attrs) {
+    std::unique_lock<std::shared_mutex> lock(*mutexes_[name]);
+    tables_[name][id] = std::shared_ptr<const Attributes>(std::move(attrs));
 }
 
-void ExtraAttributes::erase(uint64_t key, const std::string& subkey) {
-    std::unique_lock<std::shared_mutex> lock(*getMutex(key));
-    auto it1 = storage_.find(key);
-    if (it1 == storage_.end()) {
-        return;
-    }
+void ExtraAttributes::erase(const std::string& name, uint64_t id) {
+    std::lock_guard<std::shared_mutex> lock(*mutexes_[name]);
+    tables_[name].erase(id);
+}
 
-    it1->second.erase(subkey);
-
-    if (it1->second.empty()) {
-        storage_.erase(it1);
+std::shared_ptr<const Attributes> ExtraAttributes::Get(const std::string& table,
+                                                       uint64_t id) {
+    std::shared_lock<std::shared_mutex> lock(*mutexes_[table]);
+    auto it = tables_[table].find(id);
+    if (it != tables_[table].end()) {
+        return it->second;
     }
+    return nullptr;
 }
