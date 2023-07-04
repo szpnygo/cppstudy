@@ -153,3 +153,62 @@ TEST_F(RookieDBWithTableTest, LargeScale) {
     auto result = db->search("test", search, 10);
     ASSERT_EQ(result.size(), 10);
 }
+
+TEST_F(RookieDBTest, AllInOne) {
+    // create schema
+    std::shared_ptr<TableSchema> schema = std::make_shared<TableSchema>();
+    schema->addString("username");
+    schema->addInt("uid");
+
+    // create table
+    size_t dim = 32;
+    size_t max_elements = 1000;
+    db->createTable("user", schema, dim, max_elements, 16, 200, true);
+
+    ASSERT_TRUE(db->hasTable("user"));
+
+    std::mt19937 gen(99);
+    std::uniform_real_distribution<> dis(0, 1);
+
+    // init some data
+    std::vector<std::vector<float>> data;
+    std::vector<std::vector<float>> origin_data;
+    for (size_t i = 0; i < max_elements; i++) {
+        std::vector<float> v(dim);
+        std::vector<float> v2(dim);
+        for (size_t j = 0; j < dim; j++) {
+            v[j] = dis(gen);
+            v2[j] = dis(gen);
+        }
+        data.push_back(v);
+        origin_data.push_back(v2);
+    }
+
+    // add error data with wrong dim
+    std::vector<float> v(dim - 1);
+    VecData data_error(1, v);
+    ASSERT_THROW(db->add("user", data_error), std::runtime_error);
+
+    // add error data with wrong attribute
+    std::vector<float> v2(dim);
+    VecData data_error2(1, v2);
+    data_error2.setAttribute("error", Value("error"));
+    ASSERT_THROW(db->add("user", data_error2), std::runtime_error);
+
+    // add data
+    for (size_t i = 0; i < max_elements; i++) {
+        VecData v(i, data[i]);
+        v.setAttribute("username", Value("user" + std::to_string(i)));
+        v.setAttribute("uid", Value(int(i)));
+        db->add("user", v);
+    }
+
+    ASSERT_EQ(db->count("user"), max_elements);
+
+    // get data and check the result
+    auto result = db->get("user", 5);
+    ASSERT_EQ(result.id, 5);
+    ASSERT_EQ(std::get<std::string>(result.attributes->at("username")),
+              "user5");
+    ASSERT_EQ(std::get<int>(result.attributes->at("uid")), 5);
+}

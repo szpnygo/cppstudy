@@ -17,3 +17,7 @@ gtest_discover_tests(rookie_db_search_test)
 add_executable(extra_attributes_test extra_attributes_test.cpp)
 target_link_libraries(extra_attributes_test gtest_main rookiedb)
 gtest_discover_tests(extra_attributes_test)
+
+add_executable(rookie_db_real_test rookie_db_real_test.cpp)
+target_link_libraries(rookie_db_real_test gtest_main rookiedb)
+gtest_discover_tests(rookie_db_real_test)

@@ -39,7 +39,10 @@ VectorDatabase& RookieDB::get(const std::string& name) {
 void RookieDB::add(const std::string& name, VecData& data) {
     // check vector length
     if (data.v.size() != get(name).getDim()) {
-        throw std::runtime_error("Vector length mismatch");
+        throw std::runtime_error("Vector length mismatch with data length " +
+                                 std::to_string(data.v.size()) +
+                                 " and schema length " +
+                                 std::to_string(get(name).getDim()));
     }
     // check data attributes against schema
     schemas_[name]->checkVecData(data);

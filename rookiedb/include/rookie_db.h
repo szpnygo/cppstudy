@@ -44,7 +44,7 @@ class RookieDB {
                      const size_t max_elements,
                      const size_t M = 16,
                      const size_t ef_construction = 200,
-                     bool normalize = false);
+                     bool normalize = true);
 
     bool hasTable(const std::string& name);
 

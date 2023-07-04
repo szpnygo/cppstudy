@@ -3,6 +3,7 @@
 #include "hnswlib/hnswlib.h"
 
 #include <cstddef>
+#include <iostream>
 #include <vector>
 
 VectorDatabase::VectorDatabase(const std::string& name,
