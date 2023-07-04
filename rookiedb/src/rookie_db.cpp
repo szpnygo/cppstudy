@@ -101,7 +101,7 @@ RookieDB::search(const std::string& name,
         throw std::runtime_error("k must be greater than 0");
     }
 
-    DataFilter* data_filter;
+    DataFilter* data_filter = nullptr;
     if (filter && filter->conditions.size() > 0) {
         schemas_[name]->checkFilter(filter);
         data_filter = new DataFilter(name, filter, extra_attributes_);
