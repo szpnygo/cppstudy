@@ -1,6 +1,8 @@
 #pragma once
 
 #include "extra_attributes.h"
+#include "table.h"
+#include "vec_data.h"
 #include "vector_database.h"
 
 #include <iostream>
@@ -8,65 +10,6 @@
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
-
-class VecData {
-  public:
-    VecData(uint64_t id, std::vector<float>& v)
-        : id(id),
-          v(v),
-          attributes(std::make_unique<Attributes>()) {}
-
-    uint64_t id;
-    std::vector<float> v;
-    std::unique_ptr<Attributes> attributes;
-
-    void setAttribute(const std::string& key, Value value) {
-        (*attributes)[key] = value;
-    }
-
-    template <typename T>
-    std::optional<T> getAttributeAs(const std::string& key) {
-        auto it = attributes->find(key);
-        if (it != attributes->end() && std::holds_alternative<T>(it->second)) {
-            return std::get<T>(it->second);
-        }
-        return std::nullopt;
-    }
-};
-
-class TableSchema {
-  public:
-    TableSchema() = default;
-    // int, float, long, uint64_t, std::string
-    std::unordered_map<std::string, const std::type_info*> schema;
-
-    void addString(const std::string& key) {
-        schema[key] = &typeid(std::string);
-    }
-
-    void addInt(const std::string& key) { schema[key] = &typeid(int); }
-
-    void addFloat(const std::string& key) { schema[key] = &typeid(float); }
-
-    void addLong(const std::string& key) { schema[key] = &typeid(long); }
-
-    void addUint64(const std::string& key) { schema[key] = &typeid(uint64_t); }
-
-    void checkVecData(VecData& data) {
-        for (auto& [key, value] : *data.attributes) {
-            auto it = schema.find(key);
-            if (it == schema.end()) {
-                throw std::runtime_error("Key " + key + " not found in schema");
-            }
-
-            if (it->second != &typeid(value)) {
-                throw std::runtime_error(
-                    "Key " + key + " has wrong type in schema " +
-                    it->second->name() + " != " + typeid(value).name());
-            }
-        }
-    }
-};
 
 class RookieDB {
   public:

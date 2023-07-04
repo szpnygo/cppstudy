@@ -2,6 +2,7 @@
 
 #include "hnswlib/hnswlib.h"
 
+#include <cstddef>
 #include <vector>
 
 VectorDatabase::VectorDatabase(const std::string& name,
@@ -12,6 +13,7 @@ VectorDatabase::VectorDatabase(const std::string& name,
                                bool normalize)
     : normalize_(normalize),
       name_(name),
+      dim_(dim),
       max_elements_(max_elements) {
     // init space and db, use cosine similarity, remember all then data should
     // be normalized with InnerProductSpace
@@ -110,3 +112,5 @@ std::vector<std::pair<uint64_t, float>> VectorDatabase::search(
 
     return result;
 };
+
+size_t VectorDatabase::getDim() { return dim_; };

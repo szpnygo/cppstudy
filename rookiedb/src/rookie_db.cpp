@@ -35,7 +35,13 @@ VectorDatabase& RookieDB::get(const std::string& name) {
 }
 
 void RookieDB::add(const std::string& name, VecData& data) {
+    // check vector length
+    if (data.v.size() != get(name).getDim()) {
+        throw std::runtime_error("Vector length mismatch");
+    }
     // check data attributes against schema
+    schemas_[name]->checkVecData(data);
+
     get(name).add(data.id, data.v);
     extra_attributes_.add(name, data.id, std::move(data.attributes));
 }
@@ -85,6 +91,9 @@ RookieDB::search(const std::string& name,
                  std::vector<float>& v,
                  const size_t k,
                  SearchFilter* filter) {
+    if (k > 10000000000) {
+        throw std::runtime_error("k must be greater than 0");
+    }
     return get(name).search(v, k, filter);
     std::vector<VecData> vec_result;
 }

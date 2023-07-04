@@ -71,10 +71,13 @@ class VectorDatabase {
            size_t k,
            SearchFilter* isIdAllowed = nullptr);
 
+    size_t getDim();
+
   private:
     std::string name_;
     bool normalize_;
     size_t max_elements_;
+    size_t dim_;
     std::unique_ptr<hnswlib::InnerProductSpace> space_;
     std::unique_ptr<hnswlib::HierarchicalNSW<float>> db_;
 
