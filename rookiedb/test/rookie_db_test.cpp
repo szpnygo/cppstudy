@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 class RookieDBTest : public ::testing::Test {
@@ -139,7 +140,6 @@ TEST_F(RookieDBWithTableTest, SearchWithNonexistentKey) {
 
 TEST_F(RookieDBWithTableTest, LargeScale) {
     db->resize("test", 1000);
-    // add 10,000 vector data
     for (int i = 0; i < 1000; i++) {
         std::vector<float> v = {1, 2, 3, 4, 5};
         VecData data(i, v);

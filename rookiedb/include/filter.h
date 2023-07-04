@@ -17,6 +17,8 @@ struct Condition {
 
 class Filter {
   public:
+    std::unordered_map<std::string, Condition> conditions;
+
     void setEqual(const std::string& key, Value value) {
         conditions[key] = {ConditionType::Equal, value};
     }
@@ -41,13 +43,13 @@ class Filter {
         conditions[key] = {ConditionType::LessThanOrEqual, value};
     }
 
-    bool matchAttributes(const Attributes& attributes) const {
+    bool matchAttributes(std::shared_ptr<const Attributes> attributes) const {
         if (conditions.empty()) {
             return true;
         }
         for (const auto& [key, condition] : conditions) {
-            auto it = attributes.find(key);
-            if (it == attributes.end()) {
+            auto it = attributes->find(key);
+            if (it == attributes->end()) {
                 return false;
             }
             switch (condition.type) {
@@ -85,7 +87,4 @@ class Filter {
         }
         return true;
     }
-
-  private:
-    std::unordered_map<std::string, Condition> conditions;
 };

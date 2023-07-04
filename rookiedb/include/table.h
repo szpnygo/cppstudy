@@ -1,6 +1,7 @@
 #pragma once
 
 #include "extra_attributes.h"
+#include "filter.h"
 #include "vec_data.h"
 
 #include <iostream>
@@ -47,6 +48,31 @@ class TableSchema {
                     }
                 },
                 value);
+        }
+    }
+
+    void checkFilter(std::shared_ptr<Filter> filter) {
+        for (auto& [key, value] : filter->conditions) {
+            auto it = schema.find(key);
+            if (it == schema.end()) {
+                throw std::runtime_error("Key " + key + " not found in schema");
+            }
+
+            const std::type_info& expectedType = *it->second;
+            const std::string& keyRef = key;
+            const std::type_info& expectedTypeRef = expectedType;
+
+            std::visit(
+                [&](auto&& arg) {
+                    const std::type_info& valueType = typeid(arg);
+                    if (expectedTypeRef != valueType) {
+                        throw std::runtime_error("Key " + keyRef +
+                                                 " has wrong type in schema " +
+                                                 expectedTypeRef.name() +
+                                                 " != " + typeid(arg).name());
+                    }
+                },
+                value.value);
         }
     }
 };

@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <memory>
 
-RookieDB::RookieDB() {}
+RookieDB::RookieDB() {
+    extra_attributes_ = std::make_unique<ExtraAttributes>();
+}
 
 RookieDB::~RookieDB() {}
 
@@ -18,7 +20,7 @@ void RookieDB::createTable(const std::string& name,
     schemas_[name] = schema;
     dbs_[name] = std::make_shared<VectorDatabase>(
         name, dim, max_elements, M, ef_construction, normalize);
-    extra_attributes_.create(name);
+    extra_attributes_->create(name);
 }
 
 bool RookieDB::hasTable(const std::string& name) {
@@ -43,12 +45,12 @@ void RookieDB::add(const std::string& name, VecData& data) {
     schemas_[name]->checkVecData(data);
 
     get(name).add(data.id, data.v);
-    extra_attributes_.add(name, data.id, std::move(data.attributes));
+    extra_attributes_->add(name, data.id, std::move(data.attributes));
 }
 
 VecData RookieDB::get(const std::string& name, uint64_t id) {
     auto v = get(name).get(id);
-    auto e = extra_attributes_.Get(name, id);
+    auto e = extra_attributes_->Get(name, id);
     VecData data(id, v);
     data.attributes = std::make_unique<Attributes>(*e);
     return data;
@@ -90,10 +92,17 @@ std::vector<std::pair<uint64_t, float>>
 RookieDB::search(const std::string& name,
                  std::vector<float>& v,
                  const size_t k,
-                 SearchFilter* filter) {
+                 std::shared_ptr<Filter> filter) {
     if (k > 10000000000) {
         throw std::runtime_error("k must be greater than 0");
     }
-    return get(name).search(v, k, filter);
+
+    DataFilter* data_filter;
+    if (filter && filter->conditions.size() > 0) {
+        schemas_[name]->checkFilter(filter);
+        data_filter = new DataFilter(name, filter, extra_attributes_);
+    }
+
+    return get(name).search(v, k, data_filter);
     std::vector<VecData> vec_result;
 }

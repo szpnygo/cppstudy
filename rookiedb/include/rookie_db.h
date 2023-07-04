@@ -1,6 +1,7 @@
 #pragma once
 
 #include "extra_attributes.h"
+#include "filter.h"
 #include "table.h"
 #include "vec_data.h"
 #include "vector_database.h"
@@ -10,6 +11,25 @@
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
+
+class DataFilter : public SearchFilter {
+  public:
+    std::string name;
+    std::shared_ptr<Filter> filter;
+    std::shared_ptr<ExtraAttributes> extra_attributes_;
+
+    DataFilter(std::string name,
+               std::shared_ptr<Filter> filter,
+               std::shared_ptr<ExtraAttributes> extra_attributes)
+        : name(name),
+          filter(filter),
+          extra_attributes_(extra_attributes) {}
+
+    bool operator()(uint64_t id) {
+        auto data = extra_attributes_->Get(name, id);
+        return filter->matchAttributes(data);
+    }
+};
 
 class RookieDB {
   public:
@@ -52,14 +72,14 @@ class RookieDB {
     search(const std::string& name,
            std::vector<float>& v,
            const size_t k,
-           SearchFilter* filter = nullptr);
+           std::shared_ptr<Filter> filter = nullptr);
 
   private:
     std::unordered_map<std::string, std::shared_ptr<VectorDatabase>> dbs_;
     std::unordered_map<std::string, std::shared_ptr<TableSchema>> schemas_;
 
+    std::shared_ptr<ExtraAttributes> extra_attributes_;
+
     // get a vector database
     VectorDatabase& get(const std::string& name);
-
-    ExtraAttributes extra_attributes_;
 };
