@@ -9,7 +9,7 @@ class VecData {
   public:
     VecData(uint64_t id, std::vector<float>& v)
         : id(id),
-          v(v),
+          v(std::move(v)),
           attributes(std::make_unique<Attributes>()) {}
 
     uint64_t id;

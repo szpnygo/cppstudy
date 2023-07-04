@@ -48,6 +48,16 @@ void RookieDB::add(const std::string& name, VecData& data) {
     extra_attributes_->add(name, data.id, std::move(data.attributes));
 }
 
+void RookieDB::update(const std::string& name,
+                      uint64_t id,
+                      std::vector<float>& v) {
+    if (v.size() != get(name).getDim()) {
+        throw std::runtime_error("Vector length mismatch");
+    }
+
+    get(name).update(id, v);
+}
+
 VecData RookieDB::get(const std::string& name, uint64_t id) {
     auto v = get(name).get(id);
     auto e = extra_attributes_->Get(name, id);
@@ -57,12 +67,6 @@ VecData RookieDB::get(const std::string& name, uint64_t id) {
 }
 
 size_t RookieDB::count(const std::string& name) { return get(name).count(); }
-
-void RookieDB::update(const std::string& name,
-                      uint64_t id,
-                      std::vector<float>& v) {
-    get(name).update(id, v);
-}
 
 void RookieDB::erase(const std::string& name, uint64_t id) {
     get(name).erase(id);

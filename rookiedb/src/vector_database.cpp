@@ -74,12 +74,6 @@ bool VectorDatabase::exists(uint64_t id) {
     return true;
 };
 
-size_t VectorDatabase::count() {
-    return db_->getCurrentElementCount() - db_->getDeletedCount();
-};
-
-size_t VectorDatabase::count_deleted() { return db_->getDeletedCount(); };
-
 uint64_t VectorDatabase::getInternalID(uint64_t id) {
     auto search = db_->label_lookup_.find(id);
     if (search == db_->label_lookup_.end() ||
@@ -89,6 +83,12 @@ uint64_t VectorDatabase::getInternalID(uint64_t id) {
 
     return search->second;
 };
+
+size_t VectorDatabase::count() {
+    return db_->getCurrentElementCount() - db_->getDeletedCount();
+};
+
+size_t VectorDatabase::count_deleted() { return db_->getDeletedCount(); };
 
 std::vector<std::pair<uint64_t, float>> VectorDatabase::search(
     std::vector<float>& query_data, size_t k, SearchFilter* isIdAllowed) {

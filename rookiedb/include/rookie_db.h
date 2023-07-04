@@ -14,11 +14,11 @@
 
 class DataFilter : public SearchFilter {
   public:
-    std::string name;
+    const std::string& name;
     std::shared_ptr<Filter> filter;
     std::shared_ptr<ExtraAttributes> extra_attributes_;
 
-    DataFilter(std::string name,
+    DataFilter(const std::string& name,
                std::shared_ptr<Filter> filter,
                std::shared_ptr<ExtraAttributes> extra_attributes)
         : name(name),
