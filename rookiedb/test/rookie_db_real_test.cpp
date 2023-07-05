@@ -75,12 +75,12 @@ TEST_F(RookieDBTest, RealData) {
     auto results2 = db->search("data", embedding2, 20);
     ASSERT_EQ(results2.size(), 20);
 
-    for (auto result : results2) {
-        auto info = db->get("data", result.first);
-        auto key = info.getAttributeAs<std::string>("key").value();
-        std::cout << result.first << " " << key << " " << result.second
-                  << std::endl;
-    }
+    // for (auto result : results2) {
+    //     auto info = db->get("data", result.first);
+    //     auto key = info.getAttributeAs<std::string>("key").value();
+    //     std::cout << result.first << " " << key << " " << result.second
+    //               << std::endl;
+    // }
 
     bool found;
     for (size_t i = 0; i < 3; i++) {

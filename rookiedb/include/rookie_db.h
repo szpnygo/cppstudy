@@ -46,28 +46,42 @@ class RookieDB {
                      const size_t ef_construction = 200,
                      bool normalize = true);
 
+    // check table exists
     bool hasTable(const std::string& name);
 
+    // add vector data
     void add(const std::string& name, VecData& data);
 
+    // update vector data
     void update(const std::string& name, uint64_t id, std::vector<float>& v);
 
+    // erase vector data
     void erase(const std::string& name, uint64_t id);
 
+    // get vector data
     VecData get(const std::string& name, uint64_t id);
 
+    // check vector data exists
     bool exists(const std::string& name, uint64_t id);
 
+    // get count of vector data
     size_t count(const std::string& name);
 
+    // get count of deleted vector data
     size_t count_deleted(const std::string& name);
 
+    // get internal id
     uint64_t getInternalID(const std::string& name, uint64_t id);
 
+    // get max elements
     size_t getMaxElements(const std::string& name);
 
+    // resize vector database
     void resize(const std::string& name, const size_t max_elements);
 
+    // search vector data
+    // return vector of (id, distance)
+    // if filter is not null, filter the result
     std::vector<std::pair<uint64_t, float>>
     search(const std::string& name,
            std::vector<float>& v,
