@@ -8,7 +8,8 @@ include(FetchContent)
 FetchContent_Declare(
   filament_library
   GIT_REPOSITORY https://github.com/google/filament.git
-  GIT_TAG        v1.4.0
+  GIT_TAG        v1.40.0
+  GIT_SHALLOW    ON
 )
 
 FetchContent_GetProperties(filament_library)
