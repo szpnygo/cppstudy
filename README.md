@@ -53,7 +53,7 @@
 
 - [ ] **Basic Graphics Programming with OpenGL (OpenGL图形编程基础)**
    - [ ] 学习OpenGL的渲染管线和基础概念
-   - [ ] 使用OpenGL创建窗口并渲染简单的2D形状
+   - [X] 使用OpenGL创建窗口并渲染简单的2D形状
    - [ ] 使用OpenGL渲染3D几何形状，并应用基本的光照模型
 
 - [ ] **Basics of Filament Library (使用Filament库基础)**
