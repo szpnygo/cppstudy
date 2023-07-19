@@ -11,6 +11,8 @@ WebRTCApp::WebRTCApp() {
 
 WebRTCApp::~WebRTCApp() { LibWebRTC::Terminate(); }
 
-void WebRTCApp::Hello() { std::cout << "Hello, world!" << std::endl; }
+void WebRTCApp::createPeerConnection() {}
+
+bool WebRTCApp::parseConfiguration() { return true; }
 
 } // namespace easywebrtc

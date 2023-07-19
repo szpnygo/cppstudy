@@ -22,7 +22,9 @@ public:
   WebRTCApp();
   ~WebRTCApp();
 
-  void Hello();
+  void createPeerConnection();
+
+  bool parseConfiguration();
 
 private:
   scoped_refptr<RTCPeerConnectionFactory> _factory;
