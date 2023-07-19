@@ -1,6 +1,7 @@
 #include "app.h"
 #include "libwebrtc.h"
 using namespace libwebrtc;
+namespace easywebrtc {
 
 WebRTCApp::WebRTCApp() {
   LibWebRTC::Initialize();
@@ -11,3 +12,5 @@ WebRTCApp::WebRTCApp() {
 WebRTCApp::~WebRTCApp() { LibWebRTC::Terminate(); }
 
 void WebRTCApp::Hello() { std::cout << "Hello, world!" << std::endl; }
+
+} // namespace easywebrtc

@@ -13,6 +13,8 @@
 #include "rtc_video_device.h"
 #include <iostream>
 
+namespace easywebrtc {
+
 using namespace libwebrtc;
 
 class WebRTCApp {
@@ -26,3 +28,5 @@ private:
   scoped_refptr<RTCPeerConnectionFactory> _factory;
   scoped_refptr<RTCDesktopDevice> _desktop_device;
 };
+
+} // namespace easywebrtc

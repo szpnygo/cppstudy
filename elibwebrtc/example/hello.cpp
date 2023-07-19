@@ -1,10 +1,10 @@
-#include "libwebrtc.h"
+#include "app.h"
 #include <iostream>
 
 int main() {
   std::cout << "Hello, world!" << std::endl;
 
-  libwebrtc::LibWebRTC::Initialize();
+  easywebrtc::WebRTCApp app;
 
   return 0;
 }
