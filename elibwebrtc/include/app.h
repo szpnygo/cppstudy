@@ -13,6 +13,7 @@
 #include "rtc_peerconnection.h"
 #include "rtc_peerconnection_factory.h"
 #include "rtc_video_device.h"
+#include "session_description.h"
 #include "types.h"
 #include <iostream>
 #include <memory>
