@@ -11,23 +11,30 @@
 #include "rtc_peerconnection.h"
 #include "rtc_peerconnection_factory.h"
 #include "rtc_video_device.h"
+#include "types.h"
 #include <iostream>
+#include <unordered_map>
 
 namespace easywebrtc {
 
 using namespace libwebrtc;
+
+using PeerConnection = scoped_refptr<RTCPeerConnection>;
 
 class WebRTCApp {
 public:
   WebRTCApp();
   ~WebRTCApp();
 
-  void createPeerConnection();
-
-  bool parseConfiguration();
+  PeerConnection createPeerConnection(const RTCConfig &config);
 
 private:
+  // peer connection factory
   scoped_refptr<RTCPeerConnectionFactory> _factory;
+  // manage all peer connections
+  std::unordered_map<std::string, PeerConnection> _peerconnections;
+
+  // desktop device
   scoped_refptr<RTCDesktopDevice> _desktop_device;
 };
 
