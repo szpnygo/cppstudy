@@ -2,7 +2,9 @@
 #pragma once
 #include "base/scoped_ref_ptr.h"
 #include "libwebrtc.h"
+#include "peerconnection.h"
 #include "rtc_audio_device.h"
+#include "rtc_data_channel.h"
 #include "rtc_desktop_device.h"
 #include "rtc_dtmf_sender.h"
 #include "rtc_media_stream.h"
@@ -13,20 +15,21 @@
 #include "rtc_video_device.h"
 #include "types.h"
 #include <iostream>
+#include <memory>
 #include <unordered_map>
 
 namespace easywebrtc {
 
 using namespace libwebrtc;
 
-using PeerConnection = scoped_refptr<RTCPeerConnection>;
+using DataChannel = scoped_refptr<RTCDataChannel>;
 
 class WebRTCApp {
 public:
   WebRTCApp();
   ~WebRTCApp();
 
-  PeerConnection createPeerConnection(const RTCConfig &config);
+  std::shared_ptr<PeerConnection> createPeerConnection(const RTCConfig &config);
 
 private:
   // peer connection factory

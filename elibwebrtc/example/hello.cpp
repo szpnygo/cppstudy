@@ -6,11 +6,10 @@ int main() {
 
   easywebrtc::WebRTCApp app;
   RTCConfig config{
-      .iceServers =
-          {
-              {"stun:stun.l.google.com:19302"},
-              {"stun:stun.l.google.com:19302"},
-          },
+      {
+          {"stun:stun.l.google.com:19302"},
+          {"stun:stun.l.google.com:19302"},
+      },
   };
   auto pc = app.createPeerConnection(config);
 

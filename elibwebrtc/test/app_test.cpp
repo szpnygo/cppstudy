@@ -1,7 +1,9 @@
 #include "app.h"
-#include "types.h"
+#include "rtc_data_channel.h"
+#include <chrono>
 #include <gtest/gtest.h>
 #include <iostream>
+#include <thread>
 
 using namespace easywebrtc;
 
@@ -10,7 +12,7 @@ protected:
   easywebrtc::WebRTCApp app;
 };
 
-TEST_F(AppTest, createPeerConnection) {
+TEST_F(AppTest, CreatePeerConnection) {
   RTCConfig config{
       .iceServers =
           {
@@ -19,6 +21,4 @@ TEST_F(AppTest, createPeerConnection) {
           },
   };
   auto pc = app.createPeerConnection(config);
-
-  std::cout << "Hello, world!" << std::endl;
 }
