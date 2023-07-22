@@ -1,6 +1,10 @@
 #include "peerconnection.h"
+#include "data_channel.h"
+#include "rtc_data_channel.h"
 
 namespace easywebrtc {
+
+void PeerConnection::close() { _pc->Close(); }
 
 void PeerConnection::createOffer(OnCreateSuccess success,
                                  OnCreateFailure failure) {
@@ -54,6 +58,15 @@ void PeerConnection::getRemoteDescription(OnGetSuccess success,
         success(SessionDescription(sdp, type));
       },
       [failure](const char *error) { failure(error); });
+}
+
+std::shared_ptr<DataChannel>
+PeerConnection::createDataChannel(const std::string &label) {
+  libwebrtc::RTCDataChannelInit *init = new libwebrtc::RTCDataChannelInit();
+  libwebrtc::scoped_refptr<libwebrtc::RTCDataChannel> dc =
+      _pc->CreateDataChannel(libwebrtc::string(label), init);
+
+  return std::make_shared<DataChannel>(DataChannel(dc));
 }
 
 } // namespace easywebrtc

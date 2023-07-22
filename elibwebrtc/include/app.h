@@ -23,8 +23,6 @@ namespace easywebrtc {
 
 using namespace libwebrtc;
 
-using DataChannel = scoped_refptr<RTCDataChannel>;
-
 class WebRTCApp {
 public:
   WebRTCApp();

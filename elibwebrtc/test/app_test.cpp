@@ -1,4 +1,5 @@
 #include "app.h"
+#include "data_channel.h"
 #include "peerconnection.h"
 #include "session_description.h"
 #include <atomic>
@@ -53,4 +54,26 @@ TEST_F(AppTest, SetDescription) {
   std::this_thread::sleep_for(std::chrono::seconds(1));
 
   EXPECT_TRUE(successCalled);
+}
+
+TEST_F(AppTest, CreateDataChannel) {
+  auto pc = app.createPeerConnection(config);
+  auto dc = pc->createDataChannel("test");
+  OnDataChannelState onDataChannelState = [](DataChannelState state) {};
+  OnDataChannelMessage onDataChannelMessage = [](const char *buffer, int length,
+                                                 bool binary) {};
+  dc->registerObserver(onDataChannelState, onDataChannelMessage);
+  EXPECT_TRUE(dc != nullptr);
+}
+
+TEST_F(AppTest, DataChannelLabel) {
+  auto pc = app.createPeerConnection(config);
+  auto dc = pc->createDataChannel("test");
+  EXPECT_EQ(dc->label(), "test");
+}
+
+TEST_F(AppTest, DataChannelState) {
+  auto pc = app.createPeerConnection(config);
+  auto dc = pc->createDataChannel("test");
+  EXPECT_EQ(dc->state(), DataChannelState::DataChannelConnecting);
 }

@@ -13,6 +13,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 set(SRC_FILES
     src/app.cpp
     src/peerconnection.cpp
+    src/data_channel.cpp
 )
 
 add_library(${CMAKE_PROJECT_NAME} STATIC ${SRC_FILES})
