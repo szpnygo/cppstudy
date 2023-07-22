@@ -1,6 +1,5 @@
 #pragma once
 
-#include "base/fixed_size_function.h"
 #include "base/scoped_ref_ptr.h"
 #include "data_channel.h"
 #include "rtc_mediaconstraints.h"

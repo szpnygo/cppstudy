@@ -6,11 +6,9 @@ FetchContent_Declare(
 )   
 
 FetchContent_MakeAvailable(libwebrtc)
-include_directories(${libwebrtc_SOURCE_DIR}/include)
 
 # enable desktop device
 add_definitions(-DRTC_DESKTOP_DEVICE)
-
 
 # find libwebrtc
 set(LIBWEBRTC_DIR "")

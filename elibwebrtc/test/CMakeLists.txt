@@ -11,7 +11,7 @@ include(GoogleTest)
 
 function(add_test TEST_NAME)
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
-    target_link_libraries(${TEST_NAME} gtest_main easywebrtc)
+    target_link_libraries(${TEST_NAME} gtest_main ${CMAKE_PROJECT_NAME})
     gtest_discover_tests(${TEST_NAME})
 endfunction()
 
