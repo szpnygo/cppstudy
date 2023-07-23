@@ -3,17 +3,22 @@ project(easywebrtc)
 set(CMAKE_CXX_STANDARD 17)
 include(FetchContent)
 
+include(FetchContent)
+
 # install external dependencies
 include(cmake/libwebrtc.cmake)
+include(cmake/ixwebsocket.cmake)
 
 set(SRC_FILES
     src/app.cpp
     src/peerconnection.cpp
     src/data_channel.cpp
+    src/websockets.cpp
 )
 
 add_library(${CMAKE_PROJECT_NAME} STATIC ${SRC_FILES})
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC ${LIBWEBRTC})
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ixwebsocket)
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${libwebrtc_SOURCE_DIR}/include)
 

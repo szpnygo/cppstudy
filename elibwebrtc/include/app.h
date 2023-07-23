@@ -29,6 +29,8 @@ public:
   WebRTCApp();
   ~WebRTCApp();
 
+  void hello();
+
   std::shared_ptr<PeerConnection> createPeerConnection(const RTCConfig &config);
 
 private:

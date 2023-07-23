@@ -36,4 +36,6 @@ WebRTCApp::createPeerConnection(const RTCConfig &config) {
   return std::make_shared<PeerConnection>(PeerConnection(result));
 }
 
+void WebRTCApp::hello() {}
+
 } // namespace easywebrtc
