@@ -67,8 +67,9 @@ void WebSocketsClient::connect(const std::string &url) {
   _impl->webSocket->start();
 }
 
-void WebSocketsClient::sendMessage(const std::string &data, bool binary) {
-  _impl->webSocket->send(data, binary);
+bool WebSocketsClient::sendMessage(const std::string &data, bool binary) {
+  auto result = _impl->webSocket->send(data, binary);
+  return result.success;
 }
 
 }; // namespace easywebrtc

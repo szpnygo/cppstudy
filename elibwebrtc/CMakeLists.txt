@@ -3,12 +3,11 @@ project(easywebrtc)
 set(CMAKE_CXX_STANDARD 17)
 include(FetchContent)
 
-include(FetchContent)
-
 # install external dependencies
 include(cmake/libwebrtc.cmake)
 include(cmake/ixwebsocket.cmake)
 include(cmake/json.cmake)
+include(cmake/spdlog.cmake)
 
 set(SRC_FILES
     src/app.cpp

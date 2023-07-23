@@ -9,3 +9,4 @@ file(COPY ${LIBWEBRTC} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 
 add_example(hello)
+add_example(data_channel)

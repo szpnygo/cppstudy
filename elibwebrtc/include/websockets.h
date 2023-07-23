@@ -34,7 +34,7 @@ public:
   void onPing(OnPing onPing) { _onPing = onPing; }
   void onPong(OnPong onPong) { _onPong = onPong; }
 
-  void sendMessage(const std::string &data, bool binary = false);
+  bool sendMessage(const std::string &data, bool binary = false);
 
 private:
   std::unique_ptr<WebSocketClientImpl> _impl;
