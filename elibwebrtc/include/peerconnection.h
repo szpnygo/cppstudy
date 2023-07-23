@@ -1,6 +1,7 @@
 #pragma once
 
 #include "base/scoped_ref_ptr.h"
+#include "candidate.h"
 #include "data_channel.h"
 #include "rtc_mediaconstraints.h"
 #include "rtc_peerconnection.h"
@@ -49,6 +50,7 @@ typedef std::function<void(SignalingState)> OnSignalingState;
 typedef std::function<void(PeerConnectionState)> OnPeerConnectionState;
 typedef std::function<void(IceGatheringState)> OnIceGatheringState;
 typedef std::function<void(IceConnectionState)> OnIceConnectionState;
+typedef std::function<void(const ICECandidate &)> OnIceCandidate;
 
 typedef std::function<void(const std::string &)> OnCreateFailure;
 typedef std::function<void(const SessionDescription &)> OnCreateSuccess;
@@ -95,6 +97,10 @@ public:
     _observer.onIceConnectionState = onIceConnectionState;
   };
 
+  void onIceCandidate(OnIceCandidate onIceCandidate) {
+    _observer.onIceCandidate = onIceCandidate;
+  };
+
 private:
   libwebrtc::scoped_refptr<libwebrtc::RTCPeerConnection> _pc;
 
@@ -104,6 +110,7 @@ private:
     ::easywebrtc::OnPeerConnectionState onPeerConnectionState;
     ::easywebrtc::OnIceGatheringState onIceGatheringState;
     ::easywebrtc::OnIceConnectionState onIceConnectionState;
+    ::easywebrtc::OnIceCandidate onIceCandidate;
 
     virtual void OnSignalingState(libwebrtc::RTCSignalingState state) override {
       if (onSignalingState) {
@@ -134,7 +141,12 @@ private:
 
     virtual void OnIceCandidate(
         libwebrtc::scoped_refptr<libwebrtc::RTCIceCandidate> candidate)
-        override{};
+        override {
+      if (onIceCandidate) {
+        // todo to string
+        onIceCandidate(ICECandidate(candidate));
+      }
+    };
 
     virtual void OnAddStream(
         libwebrtc::scoped_refptr<libwebrtc::RTCMediaStream> stream) override{};
