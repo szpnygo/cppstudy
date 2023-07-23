@@ -9,7 +9,7 @@ int main() {
 
   app.hello();
 
-  easywebrtc::WebSocketClient client;
+  easywebrtc::WebSocketsClient client;
 
   return 0;
 }

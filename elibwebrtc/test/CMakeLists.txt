@@ -18,3 +18,4 @@ endfunction()
 file(COPY ${LIBWEBRTC} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(app_test)
+add_test(websockets_test)

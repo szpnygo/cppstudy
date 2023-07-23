@@ -13,28 +13,34 @@ public:
   std::shared_ptr<ix::WebSocket> webSocket;
 };
 
-WebSocketClient::WebSocketClient()
+WebSocketsClient::WebSocketsClient()
     : _impl(std::make_unique<WebSocketClientImpl>()){};
 
-WebSocketClient::~WebSocketClient() = default;
+WebSocketsClient::~WebSocketsClient() = default;
 
-void WebSocketClient::close() {
+void WebSocketsClient::close() {
+  _impl->webSocket->disableAutomaticReconnection();
   _impl->webSocket->close();
   ix::uninitNetSystem();
 }
 
-ReadyState WebSocketClient::getReadyState() const {
+void WebSocketsClient::stop() {
+  _impl->webSocket->stop();
+  ix::uninitNetSystem();
+}
+
+ReadyState WebSocketsClient::getReadyState() const {
   return static_cast<ReadyState>(_impl->webSocket->getReadyState());
 }
 
-void WebSocketClient::connect(const std::string &url) {
+void WebSocketsClient::connect(const std::string &url) {
   _impl->webSocket->setTLSOptions({});
   _impl->webSocket->setUrl(url);
   _impl->webSocket->setOnMessageCallback(
       [this](const ix::WebSocketMessagePtr &msg) {
         if (msg->type == ix::WebSocketMessageType::Message) {
           if (_onMessage) {
-            _onMessage(msg->str);
+            _onMessage(msg->str, msg->binary);
           }
         } else if (msg->type == ix::WebSocketMessageType::Open) {
           if (_onOpen) {
@@ -60,4 +66,9 @@ void WebSocketClient::connect(const std::string &url) {
       });
   _impl->webSocket->start();
 }
+
+void WebSocketsClient::sendMessage(const std::string &data, bool binary) {
+  _impl->webSocket->send(data, binary);
+}
+
 }; // namespace easywebrtc
