@@ -74,21 +74,37 @@
    - [ ] 通过工具进行性能分析，对比优化前后的效果
 
 - [ ] **Video Streaming with WebRTC (使用WebRTC库进行视频流传输)**
-   - [ ] 学习WebRTC的基本结构和API
+   - [x] 学习WebRTC的基本结构和API
    - [ ] 使用WebRTC实现视频流的捕获
    - [ ] 实现通过WebRTC进行视频流的发送和接收
+
+- [ ] **WebRTC Screen Capture and Data Channels (WebRTC屏幕捕捉及数据通道)**
+   - [x] 学习WebRTC库的基本使用和结构
+   - [ ] 实现使用WebRTC捕获屏幕的视频流
+   - [x] 学习WebRTC的数据通道，用于传输非音视频数据
+   - [x] 实现使用WebRTC的数据通道发送和接收简单消息
+
+- [ ] **WebRTC Video Codec (WebRTC视频编解码)**
+   - [ ] 深入学习WebRTC的媒体流处理，包括音频视频编解码
+   - [ ] 实现H264编解码操作，理解编解码对于视频质量和网络传输的影响
+   - [ ] 使用WebRTC进行视频流的发送和接收，实现基于WebRTC的点对点视频通话
+   - [ ] 测试并优化视频流的传输效率，学习如何处理网络波动情况
+
+- [ ] **IDD Driver (虚拟显示器)**
+   - [ ] 学习虚拟显示器虚拟开发
+   - [ ] 接受虚拟显示器画面并通过WebRTC发送
 
 - [ ] **Combining WebRTC with 3D Rendering (将WebRTC和3D渲染结合)**
    - [ ] 将3D渲染的结果作为WebRTC视频流的输入
    - [ ] 实现WebRTC视频流的发送和在Web前端的接收
    - [ ] 在Web前端实现视频流的播放
 
-- [ ] **CUDA Environment Setup and Hello World (CUDA环境配置与Hello World )**
+- [ ] **CUDA Environment Setup and Hello World (CUDA环境配置与Hello World)**
    - [ ] 学习如何在你的开发环境中配置CUDA
    - [ ] 使用C++编写并运行你的第一个CUDA程序，例如一个简单的"Hello, World!"程序
    - [ ] 使用CUDA并行执行一个简单的向量加法操作
 
-- [ ] **CUDA Memory Management and Parallel Programming (CUDA内存管理与并行编程 )**
+- [ ] **CUDA Memory Management and Parallel Programming (CUDA内存管理与并行编程)**
    - [ ] 使用CUDA进行内存管理，包括设备内存和主机内存的分配和释放
    - [ ] 学习并行编程基础，并实现并行化的向量运算
    - [ ] 利用CUDA对向量运算进行优化，并评估和CPU实现的性能差异
@@ -108,26 +124,4 @@
    - [ ] 优化和调试向量数据库的CUDA实现
    - [ ] 对整个项目进行全面的测试和优化，确保其可靠性和效率
 
-- [ ] **WebRTC Screen Capture and Data Channels (WebRTC屏幕捕捉及数据通道 )**
-   - [ ] 学习WebRTC库的基本使用和结构
-   - [ ] 实现使用WebRTC捕获屏幕的视频流
-   - [ ] 学习WebRTC的数据通道，用于传输非音视频数据
-   - [ ] 实现使用WebRTC的数据通道发送和接收简单消息
 
-- [ ] **WebRTC Video Codec (WebRTC视频编解码 )**
-   - [ ] 深入学习WebRTC的媒体流处理，包括音频视频编解码
-   - [ ] 实现H264编解码操作，理解编解码对于视频质量和网络传输的影响
-   - [ ] 使用WebRTC进行视频流的发送和接收，实现基于WebRTC的点对点视频通话
-   - [ ] 测试并优化视频流的传输效率，学习如何处理网络波动情况
-
-- [ ] **Operation Capture and Feedback (操作捕捉与反馈 )**
-   - [ ] 学习并实现对鼠标操作的捕捉，理解操作系统的事件机制
-   - [ ] 学习并实现对键盘操作的捕捉，理解如何处理不同类型的键盘输入
-   - [ ] 通过WebRTC的数据通道发送捕捉到的操作，理解如何将操作数据进行序列化和反序列化
-   - [ ] 在远程端接收和处理操作数据，实现对远程系统的基本操作
-
-- [ ] **Remote Desktop System Integration (远程桌面系统整合 )**
-   - [ ] 将前面所有的技术整合起来，设计并创建你的远程桌面系统
-   - [ ] 实现并发控制和错误恢复，理解在实际项目中如何处理这些复杂问题
-   - [ ] 理解并处理可能出现的性能问题，如内存管理，CPU利用率等
-   - [ ] 设计并实施对项目的全面测试，包括单元测试，功能测试，以及性能测试
