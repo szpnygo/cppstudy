@@ -7,6 +7,7 @@
 #include "rtc_peerconnection.h"
 #include "session_description.h"
 #include <functional>
+#include <iostream>
 #include <memory>
 
 namespace easywebrtc {
@@ -62,7 +63,10 @@ typedef std::function<void(const std::string &)> OnGetFailure;
 class PeerConnection {
 public:
   PeerConnection(libwebrtc::scoped_refptr<libwebrtc::RTCPeerConnection> pc)
-      : _pc(pc){};
+      : _pc(pc) {
+    _observer = new InternalObserver();
+    _pc->RegisterRTCPeerConnectionObserver(_observer);
+  };
 
   ~PeerConnection() {}
 
@@ -78,27 +82,29 @@ public:
   void getLocalDescription(OnGetSuccess success, OnGetFailure failure);
   void getRemoteDescription(OnGetSuccess success, OnGetFailure failure);
 
+  void addIceCandidate(const ICECandidate &candidate);
+
   std::shared_ptr<DataChannel> createDataChannel(const std::string &label);
 
   // RTCPeerConnectionObserver
   void onSignalingState(OnSignalingState onSignalingState) {
-    _observer.onSignalingState = onSignalingState;
+    _observer->onSignalingState = onSignalingState;
   };
 
   void onPeerConnectionState(OnPeerConnectionState onPeerConnectionState) {
-    _observer.onPeerConnectionState = onPeerConnectionState;
+    _observer->onPeerConnectionState = onPeerConnectionState;
   };
 
   void onIceGatheringState(OnIceGatheringState onIceGatheringState) {
-    _observer.onIceGatheringState = onIceGatheringState;
+    _observer->onIceGatheringState = onIceGatheringState;
   };
 
   void onIceConnectionState(OnIceConnectionState onIceConnectionState) {
-    _observer.onIceConnectionState = onIceConnectionState;
+    _observer->onIceConnectionState = onIceConnectionState;
   };
 
   void onIceCandidate(OnIceCandidate onIceCandidate) {
-    _observer.onIceCandidate = onIceCandidate;
+    _observer->onIceCandidate = onIceCandidate;
   };
 
 private:
@@ -143,7 +149,6 @@ private:
         libwebrtc::scoped_refptr<libwebrtc::RTCIceCandidate> candidate)
         override {
       if (onIceCandidate) {
-        // todo to string
         onIceCandidate(ICECandidate(candidate));
       }
     };
@@ -174,6 +179,6 @@ private:
         override{};
   };
 
-  InternalObserver _observer;
+  InternalObserver *_observer;
 };
 } // namespace easywebrtc

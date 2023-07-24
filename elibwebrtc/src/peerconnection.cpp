@@ -69,4 +69,10 @@ PeerConnection::createDataChannel(const std::string &label) {
   return std::make_shared<DataChannel>(DataChannel(dc));
 }
 
+void PeerConnection::addIceCandidate(const ICECandidate &candidate) {
+  _pc->AddCandidate(libwebrtc::string(candidate.sdp_mid()),
+                    candidate.sdp_mline_index(),
+                    libwebrtc::string(candidate.candidate()));
+}
+
 } // namespace easywebrtc
