@@ -52,6 +52,7 @@ typedef std::function<void(PeerConnectionState)> OnPeerConnectionState;
 typedef std::function<void(IceGatheringState)> OnIceGatheringState;
 typedef std::function<void(IceConnectionState)> OnIceConnectionState;
 typedef std::function<void(const ICECandidate &)> OnIceCandidate;
+typedef std::function<void(std::shared_ptr<DataChannel>)> OnDataChannel;
 
 typedef std::function<void(const std::string &)> OnCreateFailure;
 typedef std::function<void(const SessionDescription &)> OnCreateSuccess;
@@ -107,6 +108,10 @@ public:
     _observer->onIceCandidate = onIceCandidate;
   };
 
+  void onDataChannel(OnDataChannel onDataChannel) {
+    _observer->onDataChannel = onDataChannel;
+  };
+
 private:
   libwebrtc::scoped_refptr<libwebrtc::RTCPeerConnection> _pc;
 
@@ -117,6 +122,7 @@ private:
     ::easywebrtc::OnIceGatheringState onIceGatheringState;
     ::easywebrtc::OnIceConnectionState onIceConnectionState;
     ::easywebrtc::OnIceCandidate onIceCandidate;
+    ::easywebrtc::OnDataChannel onDataChannel;
 
     virtual void OnSignalingState(libwebrtc::RTCSignalingState state) override {
       if (onSignalingState) {
@@ -161,7 +167,11 @@ private:
 
     virtual void OnDataChannel(
         libwebrtc::scoped_refptr<libwebrtc::RTCDataChannel> data_channel)
-        override{};
+        override {
+      if (onDataChannel) {
+        onDataChannel(std::make_shared<DataChannel>(data_channel));
+      }
+    };
 
     virtual void OnRenegotiationNeeded() override{};
 
